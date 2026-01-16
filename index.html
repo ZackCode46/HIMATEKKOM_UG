@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Himpunan Mahasiswa Teknik Komputer - Universitas Gunadarma</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="header-wrap">
+    <div class="navbar">
+      <div class="container">
+        <div class="brand">
+          <!-- ganti src ke logo kalian -->
+          <img src="assets/logo_hima.png">
+          <div class="brand-text">HIMATEKKOM GUNADARMA</div>
+        </div>
+
+        <nav class="nav-links" role="navigation" aria-label="Main navigation">
+          <a href="index.html" data-key="nav-home" class="active">Beranda</a>
+          <a href="proker.html" data-key="nav-proker">Proker</a>
+          <a href="informasi.html" data-key="nav-info">Informasi</a>
+          <a href="pendaftaran.html" data-key="nav-daftar">Pendaftaran</a>
+          <a href="tentang.html" data-key="nav-about">Tentang</a>
+        <!-- Struktur dropdown tetap inline, bukan div terpisah -->
+  <div class="nav-dropdown">
+    <a href="#" class="nav-link">Struktur ▾</a>
+    <div class="dropdown-menu">
+      <a href="struktur-bph.html">Badan Pengurus Harian</a>
+      <a href="struktur-humas.html">Hubungan Masyarakat</a>
+      <a href="struktur-mediainfo.html">Media Kreatif</a>
+      <a href="struktur-psdm.html">Pengembangan Sumber Daya Manusia</a>
+      <a href="struktur-organisasi.html">Organisasi</a>
+    </div>
+  </div>
+        </nav>
+
+        <div class="controls">
+          <div class="lang-switch" aria-hidden="false">
+            <button id="lang-id" class="lang-btn active">ID</button>
+            <button id="lang-en" class="lang-btn">EN</button>
+          </div>
+
+          <div id="theme-toggle" class="theme-toggle" role="button" aria-pressed="false" title="Toggle theme">
+            <div class="dot"></div>
+          </div>
+
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+            <!-- simple svg burger -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- mobile panel -->
+    <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
+      <nav class="nav">
+         <a href="index.html" data-key="nav-home">Beranda</a> 
+         <a href="proker.html" data-key="nav-proker">Proker</a> 
+         <a href="informasi.html" data-key="nav-info">Informasi</a> 
+         <a href="pendaftaran.html" data-key="nav-daftar">Pendaftaran</a> 
+         <a href="tentang.html" data-key="nav-about">Tentang</a> 
+<!-- Struktur dropdown tetap inline, bukan div terpisah -->
+  <div class="nav-dropdown">
+    <a href="#" class="nav-link">Struktur ▾</a>
+    <div class="dropdown-menu">
+      <a href="struktur-bph.html">Badan Pengurus Harian</a>
+      <a href="struktur-humas.html">Hubungan Masyarakat</a>
+      <a href="struktur-mediainfo.html">Media Kreatif</a>
+      <a href="struktur-psdm.html">Pengembangan Sumber Daya Manusia</a>
+      <a href="struktur-organisasi.html">Organisasi</a>
+    </div>
+  </div>
+      </nav>
+      <div style="height:18px"></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="mobile-lang-id" class="btn secondary">ID</button>
+        <button id="mobile-lang-en" class="btn secondary">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+ <section class="hero" 
+  <section class="hero" style="background-image: url('assets/foto_kabinet.jpg');">
+    <div class="hero-content container">
+      <h1 data-key="hero-title">HIMATEKKOM GUNADARMA</h1>
+      <h3 data-key="hero-sub">Himpunan Mahasiswa Teknik Komputer</h3>
+      <p data-key="hero-desc">Bersama membangun inovasi, teknologi, dan kolaborasi mahasiswa teknik komputer Universitas Gunadarma.</p>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:18px">
+        <button class="btn" id="cta-join" data-key="cta-join">Daftar Sekarang</button>
+        <a href="#proker" class="btn secondary" id="cta-proker" data-key="cta-proker">Lihat Proker</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section container">
+    <div class="content-wrap">
+      <h2 data-key="about-title">Tentang Himpunan</h2>
+      <p data-key="about-desc">
+        Himpunan Mahasiswa Teknik Komputer Universitas Gunadarma merupakan wadah bagi mahasiswa
+        untuk mengembangkan potensi akademik, sosial, dan profesional di bidang teknologi.
+        Kami berkomitmen untuk menghadirkan kegiatan yang inovatif, kolaboratif, dan berdampak positif.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROKER (carousel auto-slide) -->
+  <section id="proker" class="section">
+    <div class="container content-wrap">
+      <h2 data-key="proker-title">Program Kerja Unggulan</h2>
+
+      <div class="carousel" id="proker-carousel" aria-roledescription="carousel">
+        <div class="carousel-track" id="carousel-track">
+          <!-- Example items: you can duplicate server-side or JS will clone for seamless scroll -->
+          <div class="carousel-item">
+            <img class="thumb" src="assets/proker1.jpg" alt="Seminar" />
+            <div class="card-body">
+              <h4>Seminar Ulang Tahun HIMATEKKOM</h4>
+              <p>From Passion to Profession: Embracing AI for Career Growth</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img class="thumb" src="assets/proker2.jpg" alt="Goes To School" />
+            <div class="card-body">
+              <h4>HIMATEKKOM Goes To School</h4>
+              <p>Memperkenalkan Teknik Komputer ke Siswa/i SMA & SMK.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img class="thumb" src="assets/proker3.jpg" alt="Collab" />
+            <div class="card-body">
+              <h4>Himpunan Collab</h4>
+              <p>Kolaborasi antar organisasi untuk tujuan bersama.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img class="thumb" src="assets/proker4.jpg" alt="Company Visit" />
+            <div class="card-body">
+              <h4>Company Visit</h4>
+              <p>Kunjungan ke perusahaan/perwakilan industri IT.</p>
+            </div>
+          </div>
+
+          <!-- JS will clone the above nodes to create seamless loop -->
+        </div>
+
+        <!-- optional nav -->
+        <div class="carousel-nav" aria-hidden="true">
+          <button class="prev" id="carousel-prev">‹</button>
+          <button class="next" id="carousel-next">›</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:18px">
+        <a href="proker.html" class="btn secondary" data-key="btn-all-proker">Lihat Semua Proker</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO -->
+  <section id="info" class="section container">
+    <div class="content-wrap">
+      <h2 data-key="info-title">Pengumuman Terbaru</h2>
+      <div class="info-list">
+        <article class="info-item">
+          <h4>Pendaftaran Anggota Baru Dibuka!</h4>
+          <p>Bergabunglah bersama kami dalam perjalanan inovasi dan pengembangan teknologi.</p>
+          <a href="daftar.html">Daftar Sekarang →</a>
+        </article>
+        <article class="info-item">
+          <h4>Seminar Ulang Tahun HIMATEKKOM Ke-8</h4>
+          <p>Kegiatan dilaksanakan pada tanggal 1 November 2025!</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="content-wrap">
+        <h2 data-key="cta-join-title">Ingin Jadi Bagian dari HIMATEKKOM?</h2>
+        <p data-key="cta-join-desc">Ayo bergabung dan berkontribusi dalam dunia teknologi bersama kami.</p>
+        <div style="margin-top:18px"><a href="daftar.html" class="btn" data-key="cta-join">Daftar Sekarang</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap container">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="assets/logo_hima.png" alt="logo" style="height:36px;border-radius:8px;box-shadow:var(--shadow)">
+        <div style="font-weight:700;">HIMATEKKOM Gunadarma</div>
+      </div>
+      <div style="text-align:right;">
+        <div>© <span id="year"></span> HIMATEKKOM — All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+
+ <!-- CHATBOT UI -->
+<!-- Desktop floating button -->
+<button id="chatbot-btn" class="chatbot-btn" aria-label="Open chat">
+  🤖
+</button>
+
+<!-- Mobile banner -->
+<div id="chat-banner" class="chat-banner" role="button" style="display:none">
+  <div>
+    <strong>Chatbot HIMATEKKOM</strong>
+    <div style="font-size:0.9rem; opacity:.95">Butuh info singkat? Ketuk untuk chat</div>
+  </div>
+  <button id="chat-banner-open" class="btn">Chat</button>
+</div>
+
+<!-- Chat panel -->
+<div id="chat-panel" class="chat-panel" aria-hidden="true">
+  <div class="header">
+    <div>Chatbot HIMATEKKOM</div>
+    <button id="chat-close" class="btn secondary">×</button>
+  </div>
+  <div class="body" id="chat-body" role="log" aria-live="polite">
+    <div class="msg bot">Halo! Ada yang bisa dibantu terkait HIMATEKKOM?</div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Ketik pesan..." autocomplete="off">
+    <button id="chat-send">Kirim</button>
+  </div>
+</div>
+    <div class="footer">
+      <input id="chat-input" placeholder="Tulis pesan..." style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+      <button id="chat-send" class="btn">Kirim</button>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
+

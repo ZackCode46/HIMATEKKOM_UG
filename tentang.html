@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tentang HIMATEKKOM Gunadarma</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0a6bff;
+      --secondary: #b21f1f;
+      --text: #0b1220;
+      --muted: #666;
+      --accent: #ffffff; /* ✅ Diperbaiki: bukan #ffffff */
+      --light-bg: #ffffff;
+      --dark-bg: #0f172a;
+      --card-light: rgba(255, 255, 255, 0.85);
+      --card-dark: rgba(15, 23, 32, 0.85);
+      --footer-light: #f8f9fa;
+      --footer-dark: #0b1220;
+      --transition: 0.3s ease;
+      --nav-h: 72px;
+      --shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    /* ========== GLOBAL RESET ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: linear-gradient(135deg, #e8f0ff, #ffffff);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.5s, color 0.5s;
+    }
+    html[data-theme="dark"] body {
+      background: linear-gradient(135deg, #0c1427, var(--dark-bg));
+      color: #e6eef8;
+    }
+
+    /* ===========================
+       NAVBAR
+       =========================== */
+    .header-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      backdrop-filter: blur(8px);
+    }
+    .navbar {
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    html[data-theme="dark"] .navbar {
+      background: linear-gradient(to bottom, rgba(8,12,16,0.85), rgba(8,12,16,0.6));
+      box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .brand img {
+      height: 44px;
+      width: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .brand img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(10, 107, 255, 0.5);
+    }
+    .brand .brand-text {
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text);
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: background var(--transition);
+      text-decoration: none;
+    }
+    html[data-theme="dark"] .nav-links a {
+      color: #e6eef8;
+    }
+    .nav-links a:hover {
+      background: rgba(26, 42, 108, 0.06);
+    }
+    html[data-theme="dark"] .nav-links a:hover {
+      background: rgba(26, 42, 108, 0.2);
+    }
+    .nav-links a.active {
+      color: var(--primary);
+    }
+
+    /* Dropdown Menu */
+    .nav-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .nav-dropdown > a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text);
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background var(--transition);
+    }
+
+    html[data-theme="dark"] .nav-dropdown > a {
+      color: #e6eef8;
+    }
+
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--light-bg);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 8px 0;
+      min-width: 200px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    html[data-theme="dark"] .dropdown-menu {
+      background: rgba(15, 23, 32, 0.95);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    html[data-theme="dark"] .dropdown-menu a {
+      color: #e6eef8;
+    }
+
+    .dropdown-menu a:hover {
+      background: rgba(26, 42, 108, 0.08);
+    }
+
+    html[data-theme="dark"] .dropdown-menu a:hover {
+      background: rgba(26, 42, 108, 0.25);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Language Switch */
+    .lang-switch {
+      display: flex;
+      gap: 6px;
+      background: rgba(255,255,255,0.6);
+      padding: 4px;
+      border-radius: 8px;
+      backdrop-filter: blur(6px);
+    }
+    html[data-theme="dark"] .lang-switch {
+      background: rgba(30,41,59,0.6);
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .lang-btn.active {
+      color: var(--primary);
+      background: rgba(26,42,108,0.12);
+    }
+    html[data-theme="dark"] .lang-btn.active {
+      background: rgba(26,42,108,0.25);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      width: 30px;
+      height: 21px;
+      justify-content: space-between;
+    }
+    .hamburger span {
+      height: 3px;
+      width: 100%;
+      background: var(--text);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+    html[data-theme="dark"] .hamburger span {
+      background: #e0e0e0;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 80%;
+      max-width: 320px;
+      height: 100vh;
+      background: var(--light-bg);
+      backdrop-filter: blur(10px);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      z-index: 1300;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: left 0.4s ease;
+    }
+    html[data-theme="dark"] .mobile-menu {
+      background: var(--dark-bg);
+      color: #e6eef8;
+    }
+    .mobile-menu.active {
+      left: 0;
+    }
+    .mobile-menu .nav-links {
+      flex-direction: column;
+      gap: 15px;
+    }
+    .mobile-menu .nav-links a {
+      padding: 12px;
+      color: var(--text);
+      border-radius: 10px;
+      width: 100%;
+      text-align: center;
+    }
+    html[data-theme="dark"] .mobile-menu .nav-links a {
+      color: #e6eef8;
+    }
+    .mobile-menu .controls {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ddd, #bbb);
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+      cursor: pointer;
+    }
+    .theme-toggle .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      margin-left: 2px;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    html[data-theme="dark"] .theme-toggle {
+      background: linear-gradient(90deg, #0f2a3a, #0b1b25);
+    }
+    html[data-theme="dark"] .theme-toggle .dot {
+      transform: translateX(20px);
+      background: var(--accent);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      min-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(160deg, rgba(10,107,255,0.08), rgba(255,255,255,0.85));
+      backdrop-filter: blur(12px);
+      padding: 80px 20px;
+      animation: fadeIn 1.2s ease forwards;
+    }
+    html[data-theme="dark"] .hero {
+      background: linear-gradient(160deg, rgba(10,107,255,0.05), rgba(15,23,32,0.7));
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      color: #444;
+    }
+    html[data-theme="dark"] .hero p {
+      color: #b6c5d6;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 5%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .animate {
+      opacity: 0;
+    }
+    .animate.appear {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    /* ABOUT SECTION */
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about img {
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transition: transform 0.5s ease;
+    }
+    .about img:hover {
+      transform: scale(1.03);
+    }
+    .about-text h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    .about-text p {
+      line-height: 1.8;
+      color: #333;
+    }
+    html[data-theme="dark"] .about-text p {
+      color: #b6c5d6;
+    }
+
+    /* VISI MISI */
+    .visi-misi {
+      text-align: center;
+      margin-top: 80px;
+    }
+    .visi-misi h2 {
+      font-size: 2rem;
+      color: var(--secondary);
+      margin-bottom: 20px;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+    .card {
+      background: var(--card-light);
+      border-radius: 16px;
+      padding: 30px;
+      width: 320px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    html[data-theme="dark"] .card {
+      background: var(--card-dark);
+      color: #e6eef8;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 14px 28px rgba(10,107,255,0.25);
+    }
+
+    /* NILAI-NILAI */
+    .values {
+      text-align: center;
+      margin-top: 80px;
+    }
+    .values h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 25px;
+    }
+    .values-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    .value-item {
+      width: 280px;
+      padding: 25px;
+      background: var(--card-light);
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: transform 0.4s;
+    }
+    html[data-theme="dark"] .value-item {
+      background: var(--card-dark);
+      color: #e6eef8;
+    }
+    .value-item:hover {
+      transform: scale(1.05);
+    }
+    .value-item h3 {
+      color: var(--secondary);
+      margin-bottom: 10px;
+    }
+
+    /* JOIN US */
+    .join {
+      text-align: center;
+      margin-top: 100px;
+      padding: 70px 20px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #fff;
+      border-radius: 24px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+    }
+    .join h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .join p {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+    .join a {
+      text-decoration: none;
+      background: #fff;
+      color: var(--primary);
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    .join a:hover {
+      background: var(--primary);
+      color: #fff;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 44px;
+      padding: 34px 20px;
+      color: #444;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      background: var(--footer-light);
+    }
+    html[data-theme="dark"] footer {
+      color: #b6c5d6;
+      border-color: rgba(255,255,255,0.1);
+      background: var(--footer-dark);
+    }
+    footer .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 850px) {
+      .nav-links {
+        display: none;
+      }
+      /* Sembunyikan dropdown dan lang-switch di navbar desktop */
+      .nav-dropdown,
+      .controls > .lang-switch {
+        display: none;
+      }
+      .hamburger {
+        display: flex;
+      }
+      .about {
+        grid-template-columns: 1fr;
+      }
+      .about img {
+        order: -1;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="brand">
+      <img src="assets/logo_hima.png" alt="Logo" />
+      <span>HIMATEKKOM</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Beranda</a>
+      <a href="proker.html">Proker</a>
+      <a href="informasi.html">Informasi</a>
+      <a href="pendaftaran.html">Pendaftaran</a>
+      <a href="tentang.html" class="active">Tentang</a>
+      <!-- Opsional: tambahkan link struktur di mobile -->
+      <a href="struktur-bph.html">Struktur Organisasi</a>
+    </div>
+    
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="id" title="Bahasa Indonesia">ID</button>
+      <button class="lang-btn" data-lang="en" title="English">EN</button>
+    </div>
+    <div class="controls">
+      <div id="theme-toggle-mobile" class="theme-toggle" role="button" aria-pressed="false" title="Toggle theme">
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header-wrap">
+    <nav class="navbar">
+      <div class="container">
+        <div class="brand">
+          <img src="assets/logo_hima.png" alt="Logo" style="height: 40px;" />
+          <span class="brand-text">HIMATEKKOM</span>
+        </div>
+
+        <div class="nav-links">
+          <a href="index.html">Beranda</a>
+          <a href="proker.html">Proker</a>
+          <a href="informasi.html">Informasi</a>
+          <a href="pendaftaran.html">Pendaftaran</a>
+          <a href="tentang.html" class="active">Tentang</a>
+          <div class="nav-dropdown">
+            <a href="#" class="nav-link">Struktur ▾</a>
+            <div class="dropdown-menu">
+              <a href="struktur-bph.html">Badan Pengurus Harian</a>
+              <a href="struktur-humas.html">Hubungan Masyarakat</a>
+              <a href="struktur-mediainfo.html">Media Kreatif</a>
+              <a href="struktur-psdm.html">Pengembangan SDM</a>
+              <a href="struktur-organisasi.html">Organisasi</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="lang-switch">
+            <button class="lang-btn active" data-lang="id" title="Bahasa Indonesia">ID</button>
+            <button class="lang-btn" data-lang="en" title="English">EN</button>
+          </div>
+          <div id="theme-toggle" class="theme-toggle" role="button" aria-pressed="false" title="Toggle theme">
+            <div class="dot"></div>
+          </div>
+          <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero animate" data-delay="0">
+    <h1>Tentang HIMATEKKOM</h1>
+    <p>Himpunan Mahasiswa Teknik Komputer Universitas Gunadarma merupakan wadah pengembangan diri, inovasi, dan kolaborasi bagi seluruh mahasiswa Teknik Komputer.</p>
+  </section>
+
+  <section class="about animate" data-delay="200">
+    <div class="about-text">
+      <h2>Siapa Kami?</h2>
+      <p>HIMATEKKOM hadir sebagai wadah bagi mahasiswa untuk menyalurkan kreativitas, mengembangkan kompetensi, dan membangun jaringan akademik serta sosial. Kami berkomitmen untuk menciptakan lingkungan yang kolaboratif dan inspiratif, mendukung setiap anggota untuk berprestasi baik di bidang akademik maupun non-akademik.</p>
+    </div>
+    <img src="assets/about_team.jpg" alt="Tentang Kami" />
+  </section>
+
+  <section class="visi-misi animate" data-delay="400">
+    <h2>Visi & Misi</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Visi</h3>
+        <p>Menjadi himpunan mahasiswa yang unggul dalam pengembangan ilmu pengetahuan dan teknologi, serta berperan aktif dalam membangun masyarakat berbasis teknologi yang beretika dan inovatif.</p>
+      </div>
+      <div class="card">
+        <h3>Misi</h3>
+        <ul style="text-align: left; margin-top: 10px; padding-left: 20px;">
+          <li>Mengembangkan potensi mahasiswa Teknik Komputer melalui kegiatan edukatif dan inovatif.</li>
+          <li>Menumbuhkan semangat kolaborasi dan solidaritas antar mahasiswa.</li>
+          <li>Membangun relasi positif dengan pihak internal dan eksternal kampus.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="values animate" data-delay="600">
+    <h2>Nilai-Nilai HIMATEKKOM</h2>
+    <div class="values-grid">
+      <div class="value-item">
+        <h3>Leadership</h3>
+        <p>Kami melatih kepemimpinan yang berintegritas dan bertanggung jawab demi kemajuan bersama.</p>
+      </div>
+      <div class="value-item">
+        <h3>Creativity</h3>
+        <p>Kreativitas menjadi dasar kami untuk berinovasi dalam setiap kegiatan dan proyek mahasiswa.</p>
+      </div>
+      <div class="value-item">
+        <h3>Collaboration</h3>
+        <p>Kami percaya bahwa kolaborasi antar individu dan organisasi adalah kunci kesuksesan HIMATEKKOM.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="join animate" data-delay="800">
+    <h2>Bergabunglah Bersama Kami!</h2>
+    <p>Jadilah bagian dari HIMATEKKOM dan kembangkan potensimu bersama komunitas yang inspiratif.</p>
+    <a href="pendaftaran.html">Daftar Sekarang</a>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <img src="assets/logo_hima.png" alt="logo" style="height: 36px; border-radius: 8px; box-shadow: var(--shadow);" />
+        <div style="font-weight: 700;">HIMATEKKOM Gunadarma</div>
+      </div>
+      <div style="text-align: right;">
+        <div>© <span id="year"></span> HIMATEKKOM — All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // === THEME TOGGLE ===
+    const doc = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+
+    function setTheme(theme) {
+      doc.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      const isDark = theme === 'dark';
+      if (themeToggle) themeToggle.setAttribute('aria-pressed', isDark);
+      if (themeToggleMobile) themeToggleMobile.setAttribute('aria-pressed', isDark);
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    [themeToggle, themeToggleMobile].forEach(toggle => {
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const next = doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        });
+      }
+    });
+
+    // === LANGUAGE SWITCH ===
+    function setLanguage(lang) {
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+    }
+
+    const savedLang = localStorage.getItem('lang') || 'id';
+    setLanguage(savedLang);
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setLanguage(btn.dataset.lang);
+      });
+    });
+
+    // === MOBILE MENU ===
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      const spans = hamburger.querySelectorAll('span');
+      if (mobileMenu.classList.contains('active')) {
+        spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+      } else {
+        spans.forEach(span => {
+          span.style.transform = '';
+          span.style.opacity = '';
+        });
+      }
+    });
+
+    // Close mobile menu on link click
+    document.querySelectorAll('.mobile-menu .nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        hamburger.querySelectorAll('span').forEach(span => {
+          span.style.transform = '';
+          span.style.opacity = '';
+        });
+      });
+    });
+
+    // === SCROLL ANIMATIONS ===
+    const animateElements = document.querySelectorAll('.animate');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay) || 0;
+          setTimeout(() => {
+            entry.target.classList.add('appear');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    animateElements.forEach(el => observer.observe(el));
+
+    // === FOOTER YEAR ===
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

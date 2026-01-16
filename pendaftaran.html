@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulir Pendaftaran HIMATEKKOM</title>
+  <style>
+    /* === GLOBAL RESET === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fb;
+      color: #1a2a6c;
+      overflow-x: hidden;
+    }
+
+    /* default (light theme) */
+    :root {
+      --bg: #f5f5f5;
+      --text: #111;
+      --muted: #444;
+      --primary: #007bff;
+      --accent: #00bcd4;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* dark mode variables */
+    html[data-theme="dark"] body {
+      --bg: #0b0f14;
+      --text: #e6eef8;
+      --muted: #b6c5d6;
+      --primary: #2e9bff;
+      --accent: #00f0ff;
+      --glass: rgba(10,14,18,0.6);
+      --shadow: 0 10px 30px rgba(2,6,12,0.6);
+    }
+
+    /* apply the variables */
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    .navbar {
+      background-color: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .card {
+      background-color: var(--glass);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    .footer {
+      background-color: var(--glass);
+      color: var(--muted);
+    }
+
+    /* === HEADER WRAPPER === */
+    .header-wrap {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+
+    /* === NAVBAR STRUCTURE === */
+    .navbar .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    /* === BRAND LOGO === */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      font-weight: 700;
+      font-size: 18px;
+      color: #1a2a6c;
+    }
+
+    /* === NAV LINKS === */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    [data-theme="dark"] .navbar{
+      background: linear-gradient(to bottom, rgba(8,12,16,0.78), rgba(8,12,16,0.65));
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #1a2a6c;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover {
+      color: #b21f1f;
+    }
+
+    /* === DROPDOWN MENU === */
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-dropdown .nav-link {
+      cursor: pointer;
+      color: #1a2a6c;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      flex-direction: column;
+      min-width: 240px;
+      z-index: 999;
+    }
+
+    .dropdown-menu a {
+      padding: 10px 16px;
+      color: #1a2a6c;
+      text-decoration: none;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f0f0f8;
+      color: #b21f1f;
+    }
+
+    .nav-dropdown:hover .dropdown-menu {
+      display: flex;
+    }
+
+    /* === CONTROLS (LANG + THEME + BURGER) === */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 5px;
+    }
+
+    .lang-btn {
+      border: none;
+      background: #e6e9f3;
+      color: #1a2a6c;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .lang-btn.active {
+      background: #1a2a6c;
+      color: #fff;
+    }
+
+    .lang-btn:hover {
+      background: #b21f1f;
+      color: #fff;
+    }
+
+    /* === THEME TOGGLE === */
+    .theme-toggle {
+      width: 42px;
+      height: 22px;
+      border-radius: 20px;
+      background: #dcdfea;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle .dot {
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle[aria-pressed="true"] {
+      background: #0f2a3a,#0b1b25
+    }
+
+    .theme-toggle[aria-pressed="true"] .dot {
+      left: 22px;
+      background: var(--accent)
+    }
+
+    /* === HAMBURGER MENU === */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #1a2a6c;
+    }
+
+    .hamburger svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    /* === MOBILE PANEL === */
+    .mobile-panel {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      padding: 20px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 2000;
+    }
+
+    .mobile-panel.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-panel a {
+      text-decoration: none;
+      color: #1a2a6c;
+      font-weight: 600;
+    }
+
+    .mobile-panel a:hover {
+      color: #b21f1f;
+    }
+
+    /* === FORM WRAPPER === */
+    .form-wrapper {
+      margin: 80px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      max-width: 520px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-wrapper h1 {
+      text-align: center;
+      color: #1a2a6c;
+      margin-bottom: 25px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    /* === FORM ELEMENTS === */
+    #daftarForm input,
+    #daftarForm select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    #daftarForm input:focus,
+    #daftarForm select:focus {
+      outline: none;
+      border-color: #1a2a6c;
+      box-shadow: 0 0 5px rgba(26,42,108,0.3);
+      transform: scale(1.01);
+    }
+
+    #daftarForm input::placeholder {
+      color: #aaa;
+    }
+
+    /* === BUTTON === */
+    #daftarForm button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(to right, #1a2a6c, #b21f1f);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    #daftarForm button[type="submit"]:hover {
+      background: linear-gradient(to right, #0d1a4d, #8a1919);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* === NOTIFIKASI HASIL === */
+    #hasil {
+      margin-top: 16px;
+      text-align: center;
+      font-weight: 600;
+      min-height: 24px;
+    }
+
+    /* ===========================
+           FOOTER
+           =========================== */
+    footer{ margin-top:44px; padding:34px 20px; background:var(--card); border-top:1px solid rgba(11,18,32,0.04); color:var(--muted) }
+    footer .wrap{ max-width:var(--container); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    footer .left{ display:flex; gap:12px; align-items:center; color:var(--muted) }
+    footer a{ color:var(--muted); text-decoration:none }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 992px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+    }
+
+    @media (max-width: 600px) {
+      .form-wrapper {
+        margin: 60px 15px;
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="header-wrap">
+    <div class="navbar">
+      <div class="container">
+        <div class="brand">
+          <img src="assets/logo_hima.png">
+          <div class="brand-text">HIMATEKKOM GUNADARMA</div>
+        </div>
+
+        <nav class="nav-links" role="navigation" aria-label="Main navigation">
+          <a href="index.html" data-key="nav-home" class="active">Beranda</a>
+          <a href="proker.html" data-key="nav-proker">Proker</a>
+          <a href="informasi.html" data-key="nav-info">Informasi</a>
+          <a href="pendaftaran.html" data-key="nav-daftar">Pendaftaran</a>
+          <a href="tentang.html" data-key="nav-about">Tentang</a>
+          <div class="nav-dropdown">
+            <a href="#" class="nav-link">Struktur ▾</a>
+            <div class="dropdown-menu">
+              <a href="struktur-bph.html">Badan Pengurus Harian</a>
+              <a href="struktur-humas.html">Hubungan Masyarakat</a>
+              <a href="struktur-mediainfo.html">Media Kreatif</a>
+              <a href="struktur-psdm.html">Pengembangan SDM</a>
+              <a href="struktur-organisasi.html">Organisasi</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="controls">
+          <div class="lang-switch" aria-hidden="false">
+            <button id="lang-id" class="lang-btn active">ID</button>
+            <button id="lang-en" class="lang-btn">EN</button>
+          </div>
+
+          <div id="theme-toggle" class="theme-toggle" role="button" aria-pressed="false" title="Toggle theme">
+            <div class="dot"></div>
+          </div>
+
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="proker.html">Proker</a>
+        <a href="informasi.html">Informasi</a>
+        <a href="pendaftaran.html">Pendaftaran</a>
+        <a href="tentang.html">Tentang</a>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-link">Struktur ▾</a>
+          <div class="dropdown-menu">
+            <a href="struktur-bph.html">BPH</a>
+            <a href="struktur-humas.html">Humas</a>
+            <a href="struktur-mediainfo.html">Media Kreatif</a>
+            <a href="struktur-psdm.html">PSDM</a>
+            <a href="struktur-organisasi.html">Organisasi</a>
+          </div>
+        </div>
+      </nav>
+      <div style="height:18px"></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="mobile-lang-id" class="btn secondary">ID</button>
+        <button id="mobile-lang-en" class="btn secondary">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- FORMULIR PENDAFTARAN -->
+  <div class="form-wrapper">
+    <h1>Formulir Pendaftaran HIMATEKKOM</h1>
+    <form id="daftarForm">
+      <input type="text" id="nama" placeholder="Nama Lengkap" required>
+      <input type="number" id="npm" placeholder="NPM" required>
+      <input type="text" id="kelas" placeholder="Kelas" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="number" id="no_telp" placeholder="Nomor Telepon" required>
+      <select id="jurusan" required>
+        <option value="">Pilih Jurusan</option>
+        <option value="Teknik Komputer">Teknik Komputer</option>
+      </select>
+      <select id="divisi" required>
+        <option value="">Pilih Divisi</option>
+        <option value="Departemen Media Kreatif">Departemen Media Kreatif</option>
+        <option value="Departemen Pengembangan Sumber Daya Masyarakat">Departemen Pengembangan SDM</option>
+        <option value="Departemen Hubungan Masyarakat">Hubungan Masyarakat</option>
+        <option value="Departemen Organisasi">Organisasi</option>
+      </select>
+      <input type="text" id="pengalaman" placeholder="Pengalaman Organisasi" required>
+      <button type="submit">Kirim Pendaftaran</button>
+    </form>
+    <!-- Tempat menampilkan pesan sukses/error -->
+    <div id="hasil"></div>
+  </div>
+
+  <script>
+    (function () {
+      const $ = sel => document.querySelector(sel);
+      const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+      const doc = document.documentElement;
+      const THEMESTORAGE = 'himatek_theme';
+      function setTheme(t) {
+        doc.setAttribute('data-theme', t);
+        localStorage.setItem(THEMESTORAGE, t);
+        const toggle = $('#theme-toggle');
+        if (toggle) toggle.setAttribute('aria-pressed', t === 'dark');
+      }
+      const initTheme = () => {
+        const saved = localStorage.getItem(THEMESTORAGE);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(saved || (prefersDark ? 'dark' : 'light'));
+      };
+
+      const LANG_KEY = 'himatek_lang';
+      let currentLang = localStorage.getItem(LANG_KEY) || 'id';
+      const i18n = {
+        id: { 'nav-home':'Beranda','nav-proker':'Proker','nav-info':'Informasi','nav-daftar':'Pendaftaran','nav-about':'Tentang' },
+        en: { 'nav-home':'Home','nav-proker':'Programs','nav-info':'Announcements','nav-daftar':'Register','nav-about':'About' }
+      };
+
+      function applyLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem(LANG_KEY, lang);
+        $$('[data-key]').forEach(el => {
+          const k = el.getAttribute('data-key');
+          if (i18n[lang][k]) el.textContent = i18n[lang][k];
+        });
+        $$('.lang-btn').forEach(b => b.classList.toggle('active', b.id.endsWith(lang)));
+      }
+
+      function initBurger() {
+        const burger = $('#hamburger');
+        const panel = $('#mobile-panel');
+        if (!burger || !panel) return;
+
+        burger.addEventListener('click', () => {
+          const open = panel.classList.toggle('active');
+          burger.setAttribute('aria-expanded', open);
+          panel.setAttribute('aria-hidden', !open);
+        });
+
+        panel.querySelectorAll('a').forEach(a =>
+          a.addEventListener('click', () => {
+            panel.classList.remove('active');
+            burger.setAttribute('aria-expanded', false);
+            panel.setAttribute('aria-hidden', true);
+          })
+        );
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        applyLanguage(currentLang);
+        initBurger();
+
+        const themeToggle = $('#theme-toggle'); 
+        if (themeToggle) themeToggle.addEventListener('click', () => { 
+          const next = doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
+          setTheme(next); 
+        }); 
+        
+        $$('.lang-btn').forEach(b => b.addEventListener('click', () => { 
+          const lang = b.id.endsWith('en') ? 'en' : 'id'; 
+          applyLanguage(lang); 
+        }));
+
+        // 🔥 INI BAGIAN PENTING: KONEKSI KE PYTHON (FLASK)
+        document.getElementById('daftarForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const data = {
+            nama: document.getElementById('nama').value,
+            npm: document.getElementById('npm').value,
+            kelas: document.getElementById('kelas').value,
+            email: document.getElementById('email').value,
+            no_telp: document.getElementById('no_telp').value,
+            jurusan: document.getElementById('jurusan').value,
+            divisi: document.getElementById('divisi').value,
+            pengalaman: document.getElementById('pengalaman').value,
+          };
+
+          const hasilDiv = document.getElementById('hasil');
+          hasilDiv.innerHTML = '<p style="color: #1a2a6c;">Mengirim data...</p>';
+
+          try {
+            const res = await fetch('http://localhost:5000/daftar', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            hasilDiv.innerHTML = `<p style="color: ${res.ok ? 'green' : 'red'}">${result.message}</p>`;
+            
+            if (res.ok) {
+              document.getElementById('daftarForm').reset(); // Kosongkan form
+            }
+          } catch (err) {
+            hasilDiv.innerHTML = '<p style="color: red">Gagal mengirim data. Pastikan server Python berjalan di localhost:5000!</p>';
+            console.error('Error:', err);
+          }
+        });
+      });
+    })();
+  </script>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap container">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="assets/logo_hima.png" alt="logo" style="height:36px;border-radius:8px;box-shadow:var(--shadow)">
+        <div style="font-weight:700;">HIMATEKKOM Gunadarma</div>
+      </div>
+      <div style="text-align:right;">
+        <div>© <span id="year"></span> HIMATEKKOM — All rights reserved</div>
+        <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

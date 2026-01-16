@@ -1,0 +1,463 @@
+/* ============================================================
+   style.css - Himpunan Mahasiswa Teknik Komputer (Final)
+   - Single CSS for all pages
+   - Hero (full-bleed), Navbar (logo, lang, theme, burger),
+     Proker (auto-slide carousel), Chatbot (desktop & mobile)
+   ============================================================ */
+
+/* ---------- VARIABLES ---------- */
+:root{
+  --bg: #f7f9fb;
+  --card: #ffffff;
+  --text: #0b1220;
+  --muted: #55606a;
+  --primary: #0a6bff;   /* main blue */
+  --accent: #00f0ff;    /* neon cyan */
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 8px 28px rgba(11,18,32,0.06);
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --container-width: 1200px;
+  --nav-height: 72px;
+  --transition-fast: 180ms;
+  --mono: 'Poppins', system-ui, Arial, sans-serif;
+}
+
+/* Dark theme */
+[data-theme="dark"]{
+  --bg: #0b0f14;
+  --card: #0f1720;
+  --text: #e6eef8;
+  --muted: #b6c5d6;
+  --primary: #2e9bff;
+  --accent: #00f0ff;
+  --glass: rgba(10,14,18,0.6);
+  --shadow: 0 10px 30px rgba(2,6,12,0.6);
+}
+
+/* ---------- BASE RESET ---------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* utility container */
+.container{
+  width:100%;
+  max-width:var(--container-width);
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 18px;
+  border-radius:999px;
+  border:0;
+  cursor:pointer;
+  font-weight:600;
+  background:var(--primary);
+  color:#fff;
+  box-shadow: 0 8px 30px rgba(10,107,255,0.12);
+  transition:transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease, background var(--transition-fast) ease;
+}
+.btn:hover{ transform:translateY(-3px); box-shadow:0 18px 40px rgba(10,107,255,0.12) }
+.btn.secondary{
+  background:transparent;
+  color:var(--primary);
+  border:1px solid rgba(10,107,255,0.12);
+  box-shadow:none;
+}
+
+/* Links & headings */
+a{ color:var(--primary); text-decoration:none }
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{ margin:0; line-height:1.1 }
+h1{ font-size:3.6rem; letter-spacing:1px }
+h2{ font-size:2.4rem }
+h3{ font-size:1.2rem }
+
+/* ---------- NAVBAR (logo + controls + burger) ---------- */
+.header-wrap{ position:relative; z-index:1200; }
+.navbar{
+  position:fixed;
+  top:0; left:0; right:0;
+  height:var(--nav-height);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.88), rgba(255,255,255,0.6));
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+[data-theme="dark"] .navbar{
+  background: linear-gradient(to bottom, rgba(8,12,16,0.78), rgba(8,12,16,0.65));
+}
+
+.navbar .container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+/* brand/logo */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:800;
+  color:var(--primary);
+  font-size:1.05rem;
+}
+.brand img{ height:44px; width:auto; object-fit:contain; display:block }
+
+/* navigation links (desktop) */
+.nav-links{
+  display:flex;
+  gap:22px;
+  align-items:center;
+}
+.nav-links a{
+  color:var(--text);
+  font-weight:600;
+  padding:8px 10px;
+  border-radius:8px;
+  transition:background var(--transition-fast);
+}
+.nav-links a:hover{ background: rgba(10,107,255,0.06) }
+.nav-links a.active{ color:var(--primary) }
+
+/* Dropdown tetap inline di dalam flex navbar */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown .nav-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.nav-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--card);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  min-width: 220px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.nav-dropdown .dropdown-menu a {
+  display: block;
+  color: var(--text);
+  padding: 10px 15px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nav-dropdown .dropdown-menu a:hover {
+  background: var(--bg);
+}
+
+/* Muncul saat hover */
+.nav-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+
+/* right-side controls */
+.controls{ display:flex; align-items:center; gap:12px; }
+
+/* language switch */
+.lang-switch{ display:flex; align-items:center; gap:6px; background:transparent; padding:6px 8px; border-radius:8px }
+.lang-switch button{ background:transparent; border:0; color:var(--muted); padding:6px 8px; cursor:pointer; font-weight:700 }
+.lang-switch button.active{ color:var(--primary) }
+
+/* theme toggle */
+.theme-toggle{
+  width:44px; height:28px; border-radius:999px; background:linear-gradient(90deg,#222,#444);
+  display:inline-flex; align-items:center; padding:4px; cursor:pointer;
+}
+.theme-toggle .dot{ width:20px; height:20px; border-radius:50%; background:#fff; margin-left:2px; transition:all .25s ease; box-shadow:0 4px 10px rgba(2,6,23,0.15) }
+[data-theme="dark"] .theme-toggle{ background:linear-gradient(90deg,#0f2a3a,#0b1b25) }
+[data-theme="dark"] .theme-toggle .dot{ transform:translateX(16px); background:var(--accent) }
+
+/* hamburger button (mobile) */
+.hamburger{
+  display:none; width:46px; height:40px; border-radius:8px; border:0; background:transparent; align-items:center; justify-content:center; cursor:pointer;
+}
+.hamburger svg{ width:22px; height:22px; color:var(--text) }
+
+/* mobile panel (sliding from right) */
+.mobile-panel{
+  position:fixed; top:var(--nav-height); right:-100%; width:320px; height:calc(100vh - var(--nav-height));
+  background:var(--card); box-shadow: 0 12px 40px rgba(2,6,23,0.12); transition:right .36s cubic-bezier(.2,.9,.3,1);
+  z-index:1200; padding:22px; overflow:auto;
+}
+.mobile-panel.open{ right:0 }
+.mobile-panel .nav{ display:flex; flex-direction:column; gap:12px }
+.mobile-panel a{ padding:12px; border-radius:10px; color:var(--text); font-weight:700 }
+
+/* ---------- HERO (full-bleed like HIMASI) ---------- */
+.hero{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  min-height:560px;
+  margin:0;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#fff;
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  overflow:hidden;
+}
+.hero[data-parallax="true"]{ background-attachment: fixed; }
+
+/* overlay */
+.hero::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0, 0, 0, 0.15); /* cuma sedikit gelap biar teks masih kebaca */
+  z-index:0;
+}
+
+.hero .hero-content{
+  position:relative; z-index:2; max-width:980px; padding:0 20px; animation: heroFade .9s ease both;
+}
+.hero h1{ font-size:4rem; font-weight:900; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
+.hero h3{ font-size:1.15rem; margin-bottom:16px; text-transform:uppercase; opacity:.95; letter-spacing:1px }
+.hero p{ font-size:1.05rem; color:rgba(255,255,255,0.92); margin-bottom:22px; }
+
+/* CTA */
+.hero .btn{ padding:12px 36px; font-size:1rem; border-radius:999px; }
+
+/* scroll hint */
+.scroll-hint{
+  position:absolute; bottom:22px; left:50%; transform:translateX(-50%);
+  color:rgba(255,255,255,0.85); font-weight:600; z-index:3;
+  background:rgba(255,255,255,0.04); padding:8px 12px; border-radius:999px;
+}
+
+/* ---------- SECTIONS / LAYOUT ---------- */
+.section{ padding:96px 0 }
+.section.container{ padding:96px 24px }
+.content-wrap{ max-width:var(--container-width); margin:0 auto; padding:0 24px }
+
+/* ---------- PROKER (auto-slide carousel) ---------- */
+/* container */
+.proker-preview{
+  padding:72px 0;
+  background:transparent;
+}
+/* carousel frame */
+.carousel{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  border-radius:12px;
+  padding:8px 0;
+}
+/* track: using CSS animation for auto sliding */
+.carousel-track{
+  display:flex;
+  gap:20px;
+  align-items:stretch;
+  /* will animate translateX */
+  animation: carousel-scroll 18s linear infinite;
+  /* make sure it won't wrap */
+  white-space:nowrap;
+}
+/* duplicate items technique expected in HTML to make seamless loop (JS can duplicate nodes) */
+.carousel-item{
+  flex: 0 0 320px; /* fixed width items */
+  max-width:320px;
+  background:var(--card);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(10,15,25,0.03);
+  display:flex;
+  flex-direction:column;
+  transition:transform .28s ease;
+}
+.carousel-item:hover{ transform:translateY(-8px) }
+
+/* image area */
+.carousel-item .thumb{
+  width:100%; height:200px; object-fit:cover; display:block;
+  background:#ddd;
+}
+/* card content */
+.carousel-item .card-body{
+  padding:14px;
+  display:flex; flex-direction:column; gap:8px; flex:1;
+}
+.carousel-item h4{ margin:0; font-size:1.05rem }
+.carousel-item p{ color:var(--muted); font-size:0.95rem; margin:0 }
+
+/* left/right nav (optional) */
+.carousel-nav{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:100%; left:0; z-index:3; pointer-events:none;
+}
+.carousel-nav button{
+  pointer-events:auto;
+  background:rgba(255,255,255,0.9);
+  border:0; width:44px; height:44px; border-radius:999px;
+  box-shadow:0 6px 18px rgba(2,6,23,0.08);
+  position:absolute; display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.carousel-nav .prev{ left:8px }
+.carousel-nav .next{ right:8px }
+
+/* keyframes: slide track left by width of items repeated.
+   NOTE: For seamless effect you should duplicate carousel items in HTML (track contains items twice).
+   animation distance depends on number of visible items; default below assumes 6 item set length ~ (6*340px).
+*/
+@keyframes carousel-scroll{
+  0%{ transform: translateX(0) }
+  100%{ transform: translateX(-50%) } /* if duplicates: move half the width (one set length) */
+}
+
+/* make animation pause on hover */
+.carousel:hover .carousel-track{ animation-play-state:paused }
+
+/* ---------- INFO / CARDS ---------- */
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:28px; }
+.card{ background:var(--card); border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow); border:1px solid rgba(10,15,25,0.03); transition:transform .24s ease, box-shadow .24s ease; }
+.card:hover{ transform:translateY(-8px); box-shadow:0 20px 40px rgba(2,6,23,0.06) }
+
+/* info list */
+.info-list{ display:flex; flex-direction:column; gap:18px }
+.info-item{ background:var(--card); padding:18px; border-radius:12px; box-shadow:var(--shadow) }
+
+/* CTA section */
+.cta-section{ background: linear-gradient(90deg, rgba(10,107,255,0.06), rgba(0,240,255,0.02)); padding:64px 0; text-align:center; border-radius:12px }
+
+/* ---------- FORM ---------- */
+.form{ background:var(--card); padding:28px; border-radius:12px; box-shadow:var(--shadow) }
+.form label{ display:block; font-weight:600; margin-bottom:6px }
+.form input, .form textarea, .form select{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(10,15,25,0.06); margin-bottom:14px; background:transparent; color:var(--text) }
+.form textarea{ min-height:120px; resize:vertical }
+
+/* =========================== FOOTER =========================== */
+    footer{ margin-top:44px; padding:34px 20px; background:var(--card); border-top:1px solid rgba(11,18,32,0.04); color:var(--muted) }
+    footer .wrap{ max-width:var(--container); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    footer .left{ display:flex; gap:12px; align-items:center; color:var(--muted) }
+    footer a{ color:var(--muted); text-decoration:none }
+
+/* ========== CHATBOT GLOBAL ========== */
+.chatbot-btn{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:#0000ff;color:#fff;border:none;font-size:24px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:9990;display:flex;align-items:center;justify-content:center;transition:transform 0.2s,background 0.2s;}
+.chatbot-btn:hover{background:#45a049;transform:scale(1.05);}
+
+/* ========== MOBILE BANNER ========== */
+.chat-banner{position:fixed;bottom:0;left:0;right:0;background:#0f1720;border-top:1px solid #0f1720;padding:12px 16px;display:none;align-items:center;justify-content:space-between;box-shadow:0 -2px 10px rgba(0,0,0,0.1);z-index:9980;font-size:14px;}
+.chat-banner .btn{background:#0000ff;color:#fff;border:none;padding:6px 12px;border-radius:4px;font-size:14px;cursor:pointer;transition:background 0.2s;}
+.chat-banner .btn:hover{background:#45a049;}
+
+/* ========== CHAT PANEL ========== */
+.chat-panel{position:fixed;bottom:90px;right:24px;width:360px;height:500px;background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.15);display:none;flex-direction:column;z-index:9995;overflow:hidden;transition:all 0.3s ease;}
+.chat-panel.open{display:flex;}
+
+/* ========== HEADER ========== */
+.chat-panel .header{display:flex;justify-content:space-between;align-items:center;padding:16px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:600;}
+.chat-panel .header .btn.secondary{background:none;border:none;color:#fff;font-size:24px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:opacity 0.2s;}
+.chat-panel .header .btn.secondary:hover{opacity:0.7;}
+
+/* ========== BODY (MESSAGES) ========== */
+.chat-panel .body{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background:#f9f9f9;scroll-behavior:smooth;}
+.chat-panel .body::-webkit-scrollbar{width:6px;}
+.chat-panel .body::-webkit-scrollbar-thumb{background:#ccc;border-radius:6px;}
+
+/* ========== MESSAGE STYLE ========== */
+.msg{max-width:80%;padding:10px 14px;border-radius:18px;line-height:1.4;white-space:pre-wrap;word-break:break-word;font-size:14px;animation:fadeIn 0.3s ease;}
+.msg.user{align-self:flex-end;background:#2563eb;color:#fff;border-bottom-right-radius:4px;}
+.msg.bot{align-self:flex-start;background:#e5e7eb;color:#111827;border-bottom-left-radius:4px;}
+
+/* ========== INPUT AREA ========== */
+.chat-input-area{display:flex;padding:12px;background:#fff;border-top:1px solid #eee;align-items:center;}
+#chat-input{flex:1;padding:10px 12px;border:1px solid #ccc;border-radius:20px;outline:none;font-size:14px;color:#111827;background:#fff;transition:all 0.2s ease;}
+#chat-input:focus{border-color:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,0.2);}
+#chat-send{margin-left:8px;padding:10px 16px;background:#2563eb;color:#fff;border:none;border-radius:20px;cursor:pointer;font-weight:600;transition:all 0.2s ease;}
+#chat-send:hover{background:#1d4ed8;transform:scale(1.05);}
+
+/* ========== CHAT OPTIONS (BUTTON LIST) ========== */
+.chat-options{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.chat-option-btn{background:#2563eb;color:#fff;border:none;padding:8px 14px;border-radius:10px;cursor:pointer;font-size:14px;transition:all 0.25s ease;}
+.chat-option-btn:hover{background:#1d4ed8;transform:scale(1.05);}
+.chat-option-btn:active{transform:scale(0.97);}
+
+/* ========== DARK MODE FIX ========== */
+body.dark-mode .chat-panel{background:#1e1e1e;color:#e0e0e0;box-shadow:0 6px 20px rgba(255,255,255,0.08);}
+body.dark-mode .chat-panel .header{background:linear-gradient(135deg,#1e3a8a,#2563eb);}
+body.dark-mode .chat-panel .body{background:#111827;}
+body.dark-mode .msg.user{background:#3b82f6;color:#fff;}
+body.dark-mode .msg.bot{background:#1f2937;color:#f9fafb;}
+body.dark-mode .chat-input-area{background:#1e1e1e;border-top:1px solid #2d2d2d;}
+body.dark-mode #chat-input{background:#111827;color:#f9fafb;border:1px solid #374151;}
+body.dark-mode #chat-send{background:#3b82f6;}
+body.dark-mode #chat-send:hover{background:#2563eb;}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media(max-width:768px){
+  .chat-panel{right:10px;bottom:80px;width:calc(100% - 20px);height:70vh;}
+  .chatbot-btn{width:56px;height:56px;bottom:16px;right:16px;}
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:translateY(0);}}
+
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px){
+  h1{ font-size:3rem }
+  .navbar{ height:68px }
+  .nav-links{ display:none } /* hide desktop links */
+  .hamburger{ display:flex }  /* show burger */
+}
+
+/* mobile adjustments */
+@media (max-width: 720px){
+  .hero{ min-height:520px; background-position: center 35% }
+  .hero h1{ font-size:2.4rem }
+  .hero h3{ font-size:1rem }
+  .container{ padding:0 18px }
+  .mobile-panel{ width:100%; top:68px; height:calc(100vh - 68px) }
+  /* show chat banner on mobile */
+  .chat-banner{ display:flex }
+  /* hide desktop floating button on very small devices */
+  .chatbot-btn{ display:none }
+  /* carousel: make items smaller */
+  .carousel-item{ flex:0 0 86vw; max-width:86vw }
+  .carousel-track{ gap:14px }
+}

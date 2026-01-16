@@ -1,0 +1,39 @@
+{
+  "pendaftaran": {
+    "anggota_001": {
+      "nama": "Fufufafa",
+      "npm": "1122334455",
+      "kelas": "1dc01",
+      "email": "Fufufafa@example.com",
+      "no_telp": "0896537200290",
+      "jurusan": "Teknik tataboga",
+      "divisi": "wapres",
+      "pengalaman": "pernah menjadi walikota solo",
+      "motivasi": "meneruskan jejak orangtua 2 periode",
+      "tanggal_daftar": "2025-10-21T14:00:00Z"
+    },
+    "anggota_002": {
+      "nama": "Ir.Kanda Bahlil, S.T, M.T",
+      "nim": "1122334456",
+      "kelas": "6dc09",
+      "email": "baahlul_keling@example.com",
+      "no_telp": "089653720025",
+      "jurusan": "Teknik Pertambangan dan Perminyakan ITB, S3 UI joki",
+      "divisi": "stafsus",
+      "pengalaman": "mengoplos pertamax dengan etanol, ferit, asam laktat, lemak babi, asam nitrat, cairan infus, dan air doa kyai",
+      "motivasi": "mencintai kanda bahlil, dan mendapatkan hidayah dari kajian gus bahlil tentang buruh afrika yang bermigrasi menjadi ahli air suci",
+      "tanggal_daftar": "2025-10-21T14:00:00Z"
+    },
+    "anggota_003": {
+      "nama": "Natalia Pigai",
+      "kelas": "9dc01",
+      "email": "Pigai_imup@example.com",
+      "no_telp": "089653720025",
+      "jurusan": "Teknik Humaniora",
+      "divisi": "stafsus",
+      "pengalaman": "pernah meminta dana sebanyak puluhan triliun kepada wowo, membuat pernyataan seperti anak sekolah dasar di depan media",
+      "motivasi": "ingin foya foya dan membicarakan hak asasi mamalia",
+      "tanggal_daftar": "2025-10-21T14:00:00Z"
+    }
+  }
+}

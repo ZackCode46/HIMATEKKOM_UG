@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Informasi — HIMATEKKOM Gunadarma</title>
+  <meta name="description" content="Berita & pengumuman HIMATEKKOM — like, komentar, bagikan." />
+  <style>
+    /* ===================== VARIABLES & RESET ===================== */
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#0b1220;
+      --muted:#58636f;
+      --primary:#1a2a6c;
+      --accent:#b21f1f;
+      --glass: rgba(255,255,255,0.7);
+      --shadow: 0 10px 30px rgba(11,18,32,0.06);
+      --radius:14px;
+      --container:1200px;
+      --nav-h:72px;
+      --mono: "Poppins", system-ui, Arial, sans-serif;
+      --transition: 300ms;
+    }
+    html[data-theme="dark"]{
+      --bg:#0b0f14;
+      --card:#0f1720;
+      --text:#e6eef8;
+      --muted:#9fb0c4;
+      --primary:#2e9bff;
+      --accent:#00f0ff;
+      --glass: rgba(10,14,18,0.6);
+      --shadow: 0 12px 36px rgba(2,6,12,0.6);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--mono);
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.6;
+      transition: background var(--transition), color var(--transition);
+    }
+    a{ color:inherit; text-decoration:none }
+    img{ max-width:100%; display:block }
+
+    .container{ width:100%; max-width:var(--container); margin:0 auto; padding:0 20px }
+
+    /* ===================== NAVBAR ===================== */
+    .header-wrap{ position:sticky; top:0; z-index:1200; }
+    .navbar{
+      height:var(--nav-h); display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.92), rgba(255,255,255,0.6));
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    html[data-theme="dark"] .navbar{
+      background: linear-gradient(to bottom, rgba(8,12,16,0.88), rgba(8,12,16,0.65));
+      box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+    }
+    .navbar .container{ display:flex; align-items:center; justify-content:space-between; gap:12px }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; color:var(--primary) }
+    .brand img{ width:44px; height:44px; object-fit:contain; border-radius:8px; box-shadow:var(--shadow) }
+    .brand .brand-text{ font-size:1.02rem; color:var(--primary) }
+
+    .nav-links{ display:flex; gap:18px; align-items:center }
+    .nav-links a{ color:var(--text); font-weight:600; padding:8px 10px; border-radius:8px; transition: background var(--transition) }
+    .nav-links a:hover{ background: rgba(26,42,108,0.06) }
+    .nav-links a.active{ color:var(--primary) }
+
+    .controls{ display:flex; align-items:center; gap:10px }
+    .lang-btn{ border:0; background:transparent; color:var(--muted); padding:6px 8px; border-radius:8px; cursor:pointer; font-weight:700 }
+    .lang-btn.active{ color:var(--primary) }
+
+    .theme-toggle{ width:44px; height:28px; border-radius:999px; background:linear-gradient(90deg,#ddd,#bbb); display:inline-flex; align-items:center; padding:4px; cursor:pointer }
+    .theme-toggle .dot{ width:20px; height:20px; border-radius:50%; background:#fff; margin-left:2px; transition:all .25s ease; box-shadow:0 4px 10px rgba(2,6,23,0.12) }
+    html[data-theme="dark"] .theme-toggle{ background:linear-gradient(90deg,#0f2a3a,#0b1b25) }
+    html[data-theme="dark"] .theme-toggle .dot{ transform:translateX(16px); background:var(--accent) }
+
+    .hamburger{ display:none; width:46px; height:40px; border-radius:8px; border:0; background:transparent; align-items:center; justify-content:center; cursor:pointer }
+    .hamburger svg{ width:22px; height:22px }
+
+    .mobile-panel{ position:fixed; top:var(--nav-h); right:-100%; width:320px; height:calc(100vh - var(--nav-h)); background:var(--card); box-shadow: 0 12px 40px rgba(2,6,23,0.12); transition:right .36s cubic-bezier(.2,.9,.3,1); z-index:1200; padding:22px; overflow:auto }
+    .mobile-panel.open{ right:0 }
+
+    /* ===================== HERO & LAYOUT ===================== */
+    .hero{ max-width:1200px; margin:28px auto 8px; padding:44px 20px; border-radius:12px; display:flex; gap:20px; align-items:center; background: linear-gradient(180deg, rgba(26,42,108,0.05), rgba(255,255,255,0.02)); }
+    html[data-theme="dark"] .hero{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(10,14,18,0.02)); }
+    .hero-left{ flex:1 }
+    .hero h1{ font-size:2.1rem; margin-bottom:8px; color:var(--text) }
+    .hero p.lead{ color:var(--muted); margin-bottom:14px; max-width:70ch }
+    .hero-cta{ display:flex; gap:12px; flex-wrap:wrap }
+    .btn{ display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; border:0; cursor:pointer; font-weight:700 }
+    .btn.primary{ background: linear-gradient(90deg,var(--primary),var(--accent)); color:#fff; box-shadow:0 8px 30px rgba(26,42,108,0.12) }
+    .btn.ghost{ background:transparent; border:1px solid rgba(26,42,108,0.06); color:var(--primary) }
+
+    .hero-right{ width:340px; min-width:200px }
+    .featured-mini{ background:var(--card); padding:14px; border-radius:10px; box-shadow:var(--shadow) }
+
+    /* ===================== CONTENT & SIDEBAR LAYOUT ===================== */
+    .main-wrap{ max-width:1200px; margin:22px auto; display:grid; grid-template-columns: 1fr 320px; gap:28px; padding:0 20px }
+    @media (max-width:1000px){ .main-wrap{ grid-template-columns:1fr } .nav-links{ display:none } .hamburger{ display:flex } }
+
+    /* featured post */
+    .featured{ background:var(--card); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); display:flex; gap:0; flex-direction:column }
+    .featured .hero-img{ width:100%; height:360px; object-fit:cover; background:#ddd }
+    .featured .content{ padding:22px }
+    .featured h2{ margin:0 0 8px; color:var(--primary) }
+    .meta-row{ display:flex; gap:12px; align-items:center; color:var(--muted); font-size:.95rem; margin-bottom:10px }
+
+    /* grid articles */
+    .grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:18px }
+    .article{ background:var(--card); border-radius:12px; box-shadow:var(--shadow); overflow:hidden; transition: transform var(--transition), box-shadow var(--transition); transform: translateY(6px); opacity:0 }
+    .article.visible{ transform:none; opacity:1 }
+    .article:hover{ transform:translateY(-8px); box-shadow: 0 18px 40px rgba(2,6,23,0.08) }
+    .article .thumb{ height:160px; width:100%; object-fit:cover; background:#eaeef8 }
+    .article .body{ padding:12px 14px }
+    .article h3{ margin:6px 0; font-size:1.05rem; color:var(--text) }
+    .article p.lead{ margin:0; color:var(--muted); font-size:0.95rem; line-height:1.5 }
+    .article .footer-actions{ display:flex; justify-content:space-between; align-items:center; padding:10px 14px 14px 14px; gap:8px }
+
+    .actions{ display:flex; gap:8px; align-items:center }
+    .icon-btn{ display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; cursor:pointer; border:1px solid rgba(11,18,32,0.04); background:transparent }
+    .icon-btn.liked{ background: linear-gradient(90deg, rgba(178,31,31,0.12), rgba(26,42,108,0.04)); color:var(--accent); border-color:transparent }
+
+    .badge{ padding:6px 10px; border-radius:999px; background:linear-gradient(90deg, rgba(26,42,108,0.06), rgba(255,255,255,0.02)); color:var(--primary); font-weight:700 }
+
+    /* sidebar */
+    .sidebar{ position:relative }
+    .side-card{ background:var(--card); padding:16px; border-radius:12px; box-shadow:var(--shadow); margin-bottom:14px }
+    .side-card h4{ margin:0 0 8px; color:var(--primary) }
+    .category-list{ display:flex; flex-direction:column; gap:8px }
+    .category-list button{ border:0; background:transparent; text-align:left; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted) }
+    .category-list button.active{ background:var(--primary); color:#fff }
+
+    /* comments modal */
+    .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; z-index:2000 }
+    .modal-backdrop.open{ display:flex }
+    .modal{ width:100%; max-width:720px; background:var(--card); border-radius:12px; padding:18px; box-shadow:var(--shadow); color:var(--text) }
+    .comment-list{ max-height:320px; overflow:auto; display:flex; flex-direction:column; gap:8px; margin-bottom:12px; padding-right:8px }
+    .comment-item{ padding:10px; border-radius:8px; background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(255,255,255,0.01)) }
+    html[data-theme="dark"] .comment-item{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(10,14,18,0.02)) }
+
+    /* ===========================
+       FOOTER
+       =========================== */
+    footer{ margin-top:44px; padding:34px 20px; background:var(--card); border-top:1px solid rgba(11,18,32,0.04); color:var(--muted) }
+    footer .wrap{ max-width:var(--container); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    footer .left{ display:flex; gap:12px; align-items:center; color:var(--muted) }
+    footer a{ color:var(--muted); text-decoration:none }
+
+    /* utilities & responsive */
+    .sr-only{ position:absolute; left:-9999px }
+    @keyframes float { from{transform:translateY(0)} to{transform:translateY(-6px)} }
+    @media (max-width:1000px){ .hero{ flex-direction:column } .hero-right{ width:100% } .nav-links{ display:none } .hamburger{ display:flex } .mobile-panel{ width:86%; } .main-wrap{ grid-template-columns:1fr } .sidebar{ order:2 } }
+    @media (max-width:600px){ .featured .hero-img{ height:220px } .article .thumb{ height:140px } }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="header-wrap" role="banner">
+    <div class="navbar">
+      <div class="container">
+        <div class="brand">
+          <img src="assets/logo_hima.png" alt="Logo HIMATEKKOM" />
+          <div class="brand-text">HIMATEKKOM GUNADARMA</div>
+        </div>
+
+        <nav class="nav-links" role="navigation" aria-label="Main navigation">
+          <a href="index.html" data-key="nav-home">Beranda</a>
+          <a href="proker.html" data-key="nav-proker">Proker</a>
+          <a href="informasi.html" class="active" data-key="nav-info">Informasi</a>
+          <a href="pendaftaran.html" data-key="nav-daftar">Pendaftaran</a>
+          <a href="tentang.html" data-key="nav-about">Tentang</a>
+
+          <div class="nav-dropdown" style="position:relative">
+            <a href="#" class="nav-link">Struktur ▾</a>
+            <div class="dropdown-menu" style="display:none; position:absolute; top:110%; left:0; min-width:220px;">
+              <a href="struktur-bph.html">Badan Pengurus Harian</a>
+              <a href="struktur-humas.html">Hubungan Masyarakat</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="controls">
+          <div class="lang-switch" role="tablist" aria-label="Language">
+            <button id="lang-id" class="lang-btn active" aria-pressed="true">ID</button>
+            <button id="lang-en" class="lang-btn" aria-pressed="false">EN</button>
+          </div>
+
+          <div id="theme-toggle" class="theme-toggle" role="button" aria-pressed="false" title="Toggle theme">
+            <div class="dot" aria-hidden="true"></div>
+          </div>
+
+          <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
+      <nav class="nav" style="display:flex;flex-direction:column;gap:12px">
+        <a href="index.html">Beranda</a>
+        <a href="proker.html">Proker</a>
+        <a href="informasi.html" class="active">Informasi</a>
+        <a href="pendaftaran.html">Pendaftaran</a>
+        <a href="tentang.html">Tentang</a>
+        <div style="height:12px"></div>
+        <div style="display:flex;gap:8px">
+          <button id="mobile-lang-id" class="lang-btn active">ID</button>
+          <button id="mobile-lang-en" class="lang-btn">EN</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero container" aria-labelledby="infoTitle">
+      <div class="hero-left">
+        <h1 id="infoTitle">Informasi & Kabar Terkini</h1>
+        <p class="lead">Berita kegiatan, pengumuman, dan prestasi dari HIMATEKKOM. Like, komentar, atau bagikan berita yang kamu suka.</p>
+        <div class="hero-cta">
+          <button class="btn primary" id="btn-new-post">Kirim Berita</button>
+          <a class="btn ghost" href="#articles">Lihat Semua</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="featured-mini">
+          <strong>Tip:</strong>
+          <p style="margin:8px 0 0;color:var(--muted)">Klik ikon komentar pada artikel untuk membaca & menambahkan komentar. Semua komentar tersimpan secara lokal.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN GRID & SIDEBAR -->
+    <div class="main-wrap container">
+      <div>
+        <!-- Featured article -->
+        <article class="featured" aria-labelledby="featTitle">
+          <img class="hero-img" src="assets/featured_event.jpg" alt="Featured event" onerror="this.src='https://via.placeholder.com/1200x600?text=Featured'">
+          <div class="content">
+            <div class="meta-row"><span class="badge">Hot</span><span>•</span><span>20 Oct 2025</span></div>
+            <h2 id="featTitle">HIMATEKKOM Fest: Pameran & Kompetisi Teknologi 2025</h2>
+            <p style="color:var(--muted);">Festival tahunan menampilkan proyek mahasiswa, lomba coding, dan workshop intensif dari sponsor industri.</p>
+            <div style="margin-top:14px; display:flex; gap:10px; align-items:center;">
+              <button class="btn primary" id="feat-read">Baca Selengkapnya</button>
+              <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
+                <button class="icon-btn" id="feat-like"><span id="feat-like-count">123</span> ❤️</button>
+                <button class="icon-btn" id="feat-share">🔗 Bagikan</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Articles grid -->
+        <section id="articles" class="grid" aria-live="polite">
+          <!-- sample article items -->
+          <article class="article" data-id="a1" data-category="kegiatan">
+            <img class="thumb" src="assets/news1.jpg" alt="News 1" onerror="this.src='https://via.placeholder.com/800x450?text=News'">
+            <div class="body">
+              <div class="meta-row"><small>15 Oct 2025</small></div>
+              <h3>Seminar Keamanan Siber: Tren 2025</h3>
+              <p class="lead">Diskusi mendalam tentang ancaman terbaru dan praktik mitigasi untuk developer & sysadmin.</p>
+              <div class="footer-actions">
+                <div class="actions">
+                  <button class="icon-btn like-btn" data-id="a1"><span class="count">5</span> ❤️</button>
+                  <button class="icon-btn comment-btn" data-id="a1">💬 Komentar</button>
+                  <button class="icon-btn share-btn" data-id="a1">🔗 Bagikan</button>
+                </div>
+                <div><span class="badge">Kegiatan</span></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="article" data-id="a2" data-category="pengumuman">
+            <img class="thumb" src="assets/news2.jpg" alt="News 2" onerror="this.src='https://via.placeholder.com/800x450?text=News'">
+            <div class="body">
+              <div class="meta-row"><small>10 Oct 2025</small></div>
+              <h3>Pengumuman: Pendaftaran Volunteer Proker</h3>
+              <p class="lead">Buka pendaftaran untuk relawan pada berbagai kegiatan; isi formulir pada tautan pendaftaran.</p>
+              <div class="footer-actions">
+                <div class="actions">
+                  <button class="icon-btn like-btn" data-id="a2"><span class="count">12</span> ❤️</button>
+                  <button class="icon-btn comment-btn" data-id="a2">💬 Komentar</button>
+                  <button class="icon-btn share-btn" data-id="a2">🔗 Bagikan</button>
+                </div>
+                <div><span class="badge">Pengumuman</span></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="article" data-id="a3" data-category="prestasi">
+            <img class="thumb" src="assets/news3.jpg" alt="News 3" onerror="this.src='https://via.placeholder.com/800x450?text=News'">
+            <div class="body">
+              <div class="meta-row"><small>01 Sep 2025</small></div>
+              <h3>Tim HIMATEKKOM Raih Juara 2 Lomba Nasional</h3>
+              <p class="lead">Tim kami berhasil membawa pulang medali setelah presentasi proyek inovatif mereka.</p>
+              <div class="footer-actions">
+                <div class="actions">
+                  <button class="icon-btn like-btn" data-id="a3"><span class="count">34</span> ❤️</button>
+                  <button class="icon-btn comment-btn" data-id="a3">💬 Komentar</button>
+                  <button class="icon-btn share-btn" data-id="a3">🔗 Bagikan</button>
+                </div>
+                <div><span class="badge">Prestasi</span></div>
+              </div>
+            </div>
+          </article>
+
+        </section>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="side-card">
+          <h4>Kategori</h4>
+          <div class="category-list">
+            <button class="active" data-cat="all">Semua</button>
+            <button data-cat="kegiatan">Kegiatan</button>
+            <button data-cat="pengumuman">Pengumuman</button>
+            <button data-cat="prestasi">Prestasi</button>
+            <button data-cat="artikel">Artikel</button>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h4>Recent</h4>
+          <ul style="list-style:none;padding-left:0;margin:0;display:flex;flex-direction:column;gap:8px">
+            <li><a href="#" style="color:var(--text)">Seminar Keamanan Siber</a></li>
+            <li><a href="#" style="color:var(--text)">Pendaftaran Volunteer Proker</a></li>
+            <li><a href="#" style="color:var(--text)">HIMATEKKOM Fest 2025</a></li>
+          </ul>
+        </div>
+
+        <div class="side-card">
+          <h4>Subscribe</h4>
+          <p style="color:var(--muted);margin:0 0 8px">Dapatkan update via email</p>
+          <div style="display:flex;gap:8px">
+            <input id="sub-email" type="email" placeholder="Email kamu" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(11,18,32,0.06);background:transparent;color:var(--text)">
+            <button class="btn primary" id="sub-btn">Subscribe</button>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- COMMENTS MODAL -->
+  <div id="modal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Komentar</h3>
+      <div id="commentList" class="comment-list" aria-live="polite"></div>
+      <textarea id="commentInput" placeholder="Tulis komentar..." style="width:100%;min-height:80px;padding:10px;border-radius:8px;border:1px solid rgba(11,18,32,0.06);margin-bottom:10px;color:var(--text);background:transparent"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn ghost" id="closeModal">Tutup</button>
+        <button class="btn primary" id="postComment">Kirim Komentar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap container">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="assets/logo_hima.png" alt="logo" style="height:36px;border-radius:8px;box-shadow:var(--shadow)">
+        <div style="font-weight:700;">HIMATEKKOM Gunadarma</div>
+      </div>
+      <div style="text-align:right;">
+        <div>© <span id="year"></span> HIMATEKKOM — All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      /* helpers */
+      const $ = s => document.querySelector(s);
+      const $$ = s => Array.from(document.querySelectorAll(s));
+      const html = document.documentElement;
+
+      /* set year */
+      $('#year').textContent = new Date().getFullYear();
+
+      /* THEME (data-theme on html) */
+      const THEME_KEY = 'himatek_theme';
+      const themeToggle = $('#theme-toggle');
+      function setTheme(t){
+        html.setAttribute('data-theme', t);
+        localStorage.setItem(THEME_KEY, t);
+        if(themeToggle) themeToggle.setAttribute('aria-pressed', t === 'dark');
+      }
+      (function initTheme(){
+        const saved = localStorage.getItem(THEME_KEY);
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches;
+        setTheme(saved || (prefersDark ? 'dark' : 'light'));
+      })();
+      themeToggle?.addEventListener('click', ()=>{
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+      });
+
+      /* MOBILE PANEL */
+      const burger = $('#hamburger'), panel = $('#mobile-panel');
+      burger?.addEventListener('click', ()=>{
+        const open = panel.classList.toggle('open');
+        burger.setAttribute('aria-expanded', open);
+        panel.setAttribute('aria-hidden', !open);
+      });
+      panel?.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=> {
+        panel.classList.remove('open');
+        burger.setAttribute('aria-expanded', false);
+        panel.setAttribute('aria-hidden', true);
+      }));
+
+      /* NAV DROPDOWN keyboard accessible */
+      const navDropdown = document.querySelector('.nav-dropdown');
+      if(navDropdown){
+        const link = navDropdown.querySelector('.nav-link');
+        const menu = navDropdown.querySelector('.dropdown-menu');
+        navDropdown.addEventListener('mouseenter', ()=> menu && (menu.style.display='flex'));
+        navDropdown.addEventListener('mouseleave', ()=> menu && (menu.style.display='none'));
+        link.addEventListener('focus', ()=> menu && (menu.style.display='flex'));
+        link.addEventListener('blur', ()=> menu && (menu.style.display='none'));
+      }
+
+      /* LANG switch */
+      function applyLang(lang){
+        $$('.lang-btn').forEach(b => {
+          b.classList.toggle('active', b.id.endsWith(lang));
+          b.setAttribute('aria-pressed', b.id.endsWith(lang));
+        });
+        // example content change
+        const title = $('.hero h1');
+        if(title) title.textContent = lang === 'en' ? 'News & Updates' : 'Informasi & Kabar Terkini';
+      }
+      $('#lang-id').addEventListener('click', ()=> applyLang('id'));
+      $('#lang-en').addEventListener('click', ()=> applyLang('en'));
+      $('#mobile-lang-id')?.addEventListener('click', ()=> applyLang('id'));
+      $('#mobile-lang-en')?.addEventListener('click', ()=> applyLang('en'));
+
+      /* =========================
+         Likes & Comments (localStorage)
+         ========================= */
+      // storage keys
+      const LIKE_KEY = 'himatek_likes'; // object: { postId: count }
+      const COMMENT_KEY = 'himatek_comments'; // object: { postId: [ {text, time} ] }
+
+      function readJSON(key){ try{ return JSON.parse(localStorage.getItem(key)) || {} } catch(e){ return {} } }
+      function writeJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)) }
+
+      // init like counts from storage
+      const likeStore = readJSON(LIKE_KEY);
+      $$('.like-btn').forEach(btn=>{
+        const id = btn.dataset.id;
+        const countSpan = btn.querySelector('.count');
+        const c = likeStore[id] || 0;
+        if(countSpan) countSpan.textContent = c;
+        if(c>0) btn.classList.add('liked');
+      });
+      // featured like
+      const featLikeCountEl = $('#feat-like-count');
+      const featKey = 'feat';
+      if(featLikeCountEl){
+        const c = likeStore[featKey] || 0;
+        featLikeCountEl.textContent = c;
+        if(c>0) $('#feat-like')?.classList.add('liked');
+      }
+
+      // like handler
+      document.addEventListener('click', (e)=>{
+        const likeBtn = e.target.closest('.like-btn, #feat-like');
+        if(!likeBtn) return;
+        if(likeBtn.id === 'feat-like'){
+          const store = readJSON(LIKE_KEY); store[featKey] = (store[featKey] || 0) + 1; writeJSON(LIKE_KEY, store);
+          featLikeCountEl.textContent = store[featKey];
+          likeBtn.classList.add('liked');
+          return;
+        }
+        const id = likeBtn.dataset.id;
+        const store = readJSON(LIKE_KEY);
+        store[id] = (store[id] || 0) + 1;
+        writeJSON(LIKE_KEY, store);
+        const span = likeBtn.querySelector('.count');
+        if(span) span.textContent = store[id];
+        likeBtn.classList.add('liked');
+      });
+
+      /* Comments: open modal per post */
+      const modal = $('#modal'), commentListEl = $('#commentList'), commentInput = $('#commentInput');
+      let activePost = null;
+
+      function renderComments(postId){
+        const store = readJSON(COMMENT_KEY);
+        const list = store[postId] || [];
+        commentListEl.innerHTML = '';
+        if(list.length === 0){
+          commentListEl.innerHTML = '<div style="color:var(--muted)">Belum ada komentar. Jadilah yang pertama!</div>';
+          return;
+        }
+        list.forEach(it=>{
+          const el = document.createElement('div');
+          el.className = 'comment-item';
+          el.innerHTML = `<div style="font-size:.95rem;margin-bottom:6px">${escapeHtml(it.text)}</div><small style="color:var(--muted)">${new Date(it.time).toLocaleString()}</small>`;
+          commentListEl.appendChild(el);
+        });
+      }
+
+      // open modal on comment-btn click
+      document.addEventListener('click', (e)=>{
+        const cb = e.target.closest('.comment-btn');
+        if(!cb) return;
+        activePost = cb.dataset.id;
+        renderComments(activePost);
+        commentInput.value = '';
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+      });
+
+      $('#closeModal').addEventListener('click', closeModal);
+      $('#postComment').addEventListener('click', postComment);
+
+      function closeModal(){
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        activePost = null;
+      }
+
+      function postComment(){
+        const text = (commentInput.value || '').trim();
+        if(!text) return alert('Komentar tidak boleh kosong.');
+        const store = readJSON(COMMENT_KEY);
+        store[activePost] = store[activePost] || [];
+        store[activePost].push({ text, time: new Date().toISOString() });
+        writeJSON(COMMENT_KEY, store);
+        renderComments(activePost);
+        commentInput.value = '';
+      }
+
+      // utility escape
+      function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+      // close modal on backdrop or ESC
+      modal.addEventListener('click', (e)=> { if(e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') closeModal(); });
+
+      /* SHARE (Web Share API with fallback copy link) */
+      async function sharePost(postTitle, postUrl){
+        if(navigator.share){
+          try{ await navigator.share({ title: postTitle, text: postTitle, url: postUrl }); return; } catch(e){ /* ignore */ }
+        }
+        // fallback: copy to clipboard
+        try{
+          await navigator.clipboard.writeText(postUrl);
+          alert('Tautan disalin ke clipboard.');
+        }catch(err){
+          // as last resort, prompt
+          prompt('Salin tautan ini:', postUrl);
+        }
+      }
+
+      document.addEventListener('click', (e)=>{
+        const sbtn = e.target.closest('.share-btn, #feat-share');
+        if(!sbtn) return;
+        if(sbtn.id === 'feat-share'){
+          sharePost('HIMATEKKOM Fest 2025', location.href + '#featured');
+          return;
+        }
+        const id = sbtn.closest('.article')?.dataset.id;
+        if(!id) return;
+        const title = sbtn.closest('.article')?.querySelector('h3')?.textContent || 'Berita HIMATEKKOM';
+        const url = location.href.split('#')[0] + '#article-' + id;
+        sharePost(title, url);
+      });
+
+      /* CTA subscribe & new post (demo) */
+      $('#sub-btn').addEventListener('click', ()=>{
+        const email = $('#sub-email').value.trim();
+        if(!email) return alert('Masukkan email.');
+        alert('Terima kasih! (Demo) Subscribed: ' + email);
+        $('#sub-email').value = '';
+      });
+      $('#btn-new-post').addEventListener('click', ()=> alert('Fitur pengiriman berita sementara belum diaktifkan.'));
+
+      /* featured read -> scroll to featured */
+      $('#feat-read').addEventListener('click', ()=> {
+        document.querySelector('.featured').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      /* CATEGORY FILTERS (sidebar) */
+      $$('.category-list button').forEach(btn=> btn.addEventListener('click', (e)=>{
+        $$('.category-list button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        filterByCategory(cat);
+      }));
+
+      function filterByCategory(cat){
+        $$('.article').forEach(a=>{
+          if(cat === 'all') { a.style.display = ''; return; }
+          if(a.dataset.category === cat) a.style.display = '';
+          else a.style.display = 'none';
+        });
+        // update reveal observer
+        observeArticles();
+      }
+
+      /* SEARCH (simple) */
+      $('#searchInput').addEventListener('input', (e)=>{
+        const q = (e.target.value || '').toLowerCase();
+        $$('.article').forEach(a=>{
+          const txt = (a.textContent || '').toLowerCase();
+          a.style.display = !q || txt.includes(q) ? '' : 'none';
+        });
+        observeArticles();
+      });
+
+      /* REVEAL ANIMATION USING IntersectionObserver */
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(en=>{
+          if(en.isIntersecting){
+            en.target.classList.add('visible');
+            obs.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      function observeArticles(){
+        $$('.article').forEach(el=>{
+          if(el.style.display === 'none') { el.classList.remove('visible'); return; }
+          obs.observe(el);
+        });
+      }
+      // initial
+      observeArticles();
+
+      /* Initialize like counts displayed from storage (counts handled earlier) */
+      // make sure counts showed for prefilled elements (if any)
+      (function syncInitialCounts(){
+        const store = readJSON(LIKE_KEY);
+        $$('.like-btn').forEach(b=>{
+          const id = b.dataset.id;
+          const c = store[id] || 0;
+          b.querySelector('.count').textContent = c;
+          if(c>0) b.classList.add('liked');
+        });
+        if($('#feat-like')) {
+          const c = store['feat'] || 0;
+          $('#feat-like-count').textContent = c;
+          if(c>0) $('#feat-like').classList.add('liked');
+        }
+      })();
+
+      /* Accessibility: close mobile panel on Escape */
+      document.addEventListener('keydown', (e)=> {
+        if(e.key === 'Escape' && panel?.classList.contains('open')){
+          panel.classList.remove('open');
+          burger?.setAttribute('aria-expanded', false);
+          panel?.setAttribute('aria-hidden', true);
+        }
+      });
+
+      /* fallback images handling (replace broken images) */
+      $$('img').forEach(img=>{
+        img.addEventListener('error', ()=> { img.src = 'https://via.placeholder.com/800x450?text=Image' });
+      });
+
+    })();
+  </script>
+</body>
+</html>

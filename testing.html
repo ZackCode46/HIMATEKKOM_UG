@@ -1,0 +1,213 @@
+<style>
+    .struktur-page {
+        max-width: 1200px;
+        margin: auto;
+        padding: 80px 20px
+    }
+
+    .struktur-hero {
+        position: relative;
+        padding: 80px 40px 100px;
+        border-radius: 32px;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .15)),
+            radial-gradient(circle at top left, rgba(26, 42, 108, .35), transparent 55%),
+            radial-gradient(circle at bottom right, rgba(178, 31, 31, .35), transparent 55%);
+        backdrop-filter: blur(16px);
+        overflow: hidden
+    }
+
+    .struktur-title {
+        text-align: center;
+        margin-bottom: 60px
+    }
+
+    .struktur-title h1 {
+        font-size: 34px;
+        font-weight: 800
+    }
+
+    .struktur-title p {
+        max-width: 620px;
+        margin: 12px auto 0;
+        opacity: .8
+    }
+
+    .struktur-hierarchy {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 70px
+    }
+
+    .row-top {
+        display: flex;
+        justify-content: center
+    }
+
+    .row-bottom {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        flex-wrap: wrap
+    }
+
+    .editorial-main {
+        text-align: center
+    }
+
+    .editorial-main img {
+        width: 220px;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 50%;
+        padding: 6px;
+        background:
+            linear-gradient(#fff, #fff) padding-box,
+            linear-gradient(135deg, #1a2a6c, #6a11cb, #b21f1f) border-box;
+        border: 4px solid transparent
+    }
+
+    .editorial-main h3 {
+        margin-top: 18px;
+        font-size: 20px;
+        font-weight: 700
+    }
+
+    .editorial-main span {
+        font-size: 15px;
+        opacity: .7
+    }
+
+    .editorial-member {
+        text-align: center;
+        max-width: 160px
+    }
+
+    .editorial-member img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        padding: 4px;
+        background:
+            linear-gradient(#fff, #fff) padding-box,
+            linear-gradient(135deg, #1a2a6c, #b21f1f) border-box;
+        border: 3px solid transparent
+    }
+
+    .editorial-member h4 {
+        margin-top: 12px;
+        font-size: 16px;
+        font-weight: 600
+    }
+
+    .editorial-member span {
+        font-size: 14px;
+        opacity: .65
+    }
+
+    .struktur-desc {
+        max-width: 860px;
+        margin: 100px auto 0;
+        font-size: 17px;
+        line-height: 1.8;
+        text-align: center
+    }
+
+    .struktur-tvm {
+        margin-top: 80px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 40px
+    }
+
+    .struktur-tvm h3 {
+        font-size: 20px;
+        margin-bottom: 10px
+    }
+
+    .struktur-tvm p {
+        line-height: 1.75;
+        opacity: .85
+    }
+
+    @media(max-width:700px) {
+        .struktur-title h1 {
+            font-size: 28px
+        }
+
+        .editorial-main img {
+            width: 180px;
+            height: 180px
+        }
+
+        .row-bottom {
+            gap: 40px
+        }
+    }
+</style>
+
+<main class="struktur-page">
+
+    <section class="struktur-hero">
+        <div class="struktur-title">
+            <h1>Hubungan Masyarakat</h1>
+            <p>Divisi yang mengelola komunikasi, citra, dan relasi eksternal HIMATEKKOM.</p>
+        </div>
+
+        <div class="struktur-hierarchy">
+
+            <div class="row-top">
+                <div class="editorial-main">
+                    <img src="assets/KOOR HUMAS.jpg">
+                    <h3>Nama Koordinator</h3>
+                    <span>Koordinator Humas</span>
+                </div>
+            </div>
+
+            <div class="row-bottom">
+                <div class="editorial-member">
+                    <img src="assets/ANGGOTA HUMAS 1.jpg">
+                    <h4>Nama Anggota</h4>
+                    <span>Anggota Humas</span>
+                </div>
+                <div class="editorial-member">
+                    <img src="assets/ANGGOTA HUMAS 2.jpg">
+                    <h4>Nama Anggota</h4>
+                    <span>Anggota Humas</span>
+                </div>
+                <div class="editorial-member">
+                    <img src="assets/ANGGOTA HUMAS 3.jpg">
+                    <h4>Nama Anggota</h4>
+                    <span>Anggota Humas</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="struktur-desc">
+        Divisi Hubungan Masyarakat berperan sebagai penghubung antara HIMATEKKOM
+        dengan pihak internal maupun eksternal, serta membangun citra organisasi
+        melalui komunikasi yang profesional dan berkelanjutan.
+    </section>
+
+    <section class="struktur-tvm">
+        <div>
+            <h3>Tujuan</h3>
+            <p>Membangun relasi yang baik dengan seluruh pihak terkait.</p>
+        </div>
+        <div>
+            <h3>Visi</h3>
+            <p>Menjadikan HIMATEKKOM dikenal sebagai organisasi yang komunikatif dan kredibel.</p>
+        </div>
+        <div>
+            <h3>Misi</h3>
+            <p>Mengelola informasi, publikasi, dan hubungan eksternal secara konsisten.</p>
+        </div>
+    </section>
+
+</main>
+
+<script></script>

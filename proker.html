@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Program Kerja — HIMATEKKOM Gunadarma</title>
+  <meta name="description" content="Program Kerja HIMATEKKOM Gunadarma - seminar, workshop, pengabdian masyarakat, lomba & festival." />
+
+  <style>
+    /* ===========================
+       VARIABLES & RESET
+       =========================== */
+    :root{
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #0b1220;
+      --muted: #55606a;
+      --primary: #1a2a6c;
+      --accent: #b21f1f;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 10px 30px rgba(11,18,32,0.06);
+      --radius-lg: 14px;
+      --container: 1200px;
+      --nav-h: 72px;
+      --transition: 320ms;
+      --mono: "Poppins", system-ui, Arial, sans-serif;
+    }
+
+    /* dark theme variables apply when html[data-theme="dark"] is set */
+    html[data-theme="dark"]{
+      --bg: #0b0f14;
+      --card: #0f1720;
+      --text: #e6eef8;
+      --muted: #9fb0c4;
+      --primary: #2e9bff;
+      --accent: #00f0ff;
+      --glass: rgba(10,14,18,0.6);
+      --shadow: 0 10px 30px rgba(2,6,12,0.6);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--mono);
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.6;
+      transition:background var(--transition), color var(--transition);
+    }
+
+    a{ color:inherit; text-decoration:none }
+    img{ max-width:100%; display:block }
+
+    /* container */
+    .container{
+      width:100%;
+      max-width:var(--container);
+      margin:0 auto;
+      padding:0 20px;
+    }
+
+    /* ===========================
+       NAVBAR
+       =========================== */
+    .header-wrap{ position:sticky; top:0; z-index:1200; backdrop-filter: blur(8px); }
+    .navbar{
+      height:var(--nav-h);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    html[data-theme="dark"] .navbar{
+      background: linear-gradient(to bottom, rgba(8,12,16,0.85), rgba(8,12,16,0.6));
+      box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+    }
+    .navbar .container{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; color:var(--primary) }
+    .brand img{ height:44px; width:44px; object-fit:contain; border-radius:8px; box-shadow:var(--shadow) }
+    .brand .brand-text{ font-size:1.05rem; color:var(--primary) }
+
+    .nav-links{ display:flex; gap:20px; align-items:center }
+    .nav-links a{ color:var(--text); font-weight:600; padding:8px 10px; border-radius:8px; transition:background var(--transition) }
+    .nav-links a:hover{ background: rgba(26,42,108,0.06) }
+    .nav-links a.active{ color:var(--primary) }
+
+    .controls{ display:flex; align-items:center; gap:10px }
+    .lang-switch{ display:flex; gap:6px }
+    .lang-btn{ background:transparent; border:1px solid rgba(0,0,0,0.06); padding:6px 8px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight:700 }
+    .lang-btn.active{ color:var(--primary); background: rgba(26,42,108,0.06) }
+
+    /* theme toggle */
+    .theme-toggle{
+      width:44px; height:28px; border-radius:999px; background:linear-gradient(90deg,#ddd,#bbb);
+      display:inline-flex; align-items:center; padding:4px; cursor:pointer;
+    }
+    .theme-toggle .dot{ width:20px; height:20px; border-radius:50%; background:#fff; margin-left:2px; transition:all .25s ease; box-shadow:0 4px 10px rgba(2,6,23,0.12) }
+    html[data-theme="dark"] .theme-toggle{ background:linear-gradient(90deg,#0f2a3a,#0b1b25) }
+    html[data-theme="dark"] .theme-toggle .dot{ transform:translateX(16px); background:var(--accent) }
+
+    /* hamburger */
+    .hamburger{ display:none; width:46px; height:40px; border-radius:8px; border:0; background:transparent; align-items:center; justify-content:center; cursor:pointer }
+    .hamburger svg{ width:22px; height:22px; color:var(--text) }
+
+    /* mobile panel */
+    .mobile-panel{
+      position:fixed; top:var(--nav-h); right:-100%; width:320px; height:calc(100vh - var(--nav-h));
+      background:var(--card); box-shadow: 0 12px 40px rgba(2,6,23,0.12); transition:right .36s cubic-bezier(.2,.9,.3,1);
+      z-index:1200; padding:22px; overflow:auto;
+    }
+    .mobile-panel.open{ right:0 }
+    .mobile-panel .nav{ display:flex; flex-direction:column; gap:12px }
+    .mobile-panel a{ padding:12px; border-radius:10px; color:var(--text); font-weight:700 }
+
+    /* ===========================
+       HERO
+       =========================== */
+    .hero{
+      max-width:1200px; margin:36px auto 18px; padding:48px 20px; border-radius:14px;
+      display:flex; align-items:center; gap:28px;
+      background: linear-gradient(180deg, rgba(26,42,108,0.06), rgba(255,255,255,0.02));
+      position:relative; overflow:hidden;
+    }
+    html[data-theme="dark"] .hero{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(10,14,18,0.02)) }
+
+    .hero-left{ flex:1; min-width:260px }
+    .hero h1{ font-size:2.2rem; margin-bottom:8px; color:var(--text) }
+    .hero p.lead{ color:var(--muted); margin-bottom:18px; max-width:64ch }
+    .hero-cta{ display:flex; gap:12px; flex-wrap:wrap }
+
+    .btn{ display:inline-flex; align-items:center; gap:10px; padding:10px 18px; border-radius:999px; border:0; cursor:pointer; font-weight:600 }
+    .btn.primary{ background: linear-gradient(90deg,var(--primary),var(--accent)); color:#fff; box-shadow:0 8px 30px rgba(26,42,108,0.12) }
+    .btn.ghost{ background:transparent; border:1px solid rgba(26,42,108,0.06); color:var(--primary) }
+
+    .hero-right{ width:380px; min-width:220px; display:flex; align-items:center; justify-content:center }
+    .hero-card{ background:var(--card); padding:18px; border-radius:12px; box-shadow:var(--shadow); width:100% }
+
+    /* ===========================
+       INTRO / SEARCH / FILTER
+       =========================== */
+    .intro{ max-width:1100px; margin:18px auto; padding:0 20px; text-align:center }
+    .intro p { color:var(--muted); max-width:900px; margin:0 auto 18px }
+
+    .controls-row{ max-width:1100px; margin:14px auto; display:flex; gap:12px; align-items:center; padding:0 20px; justify-content:space-between; flex-wrap:wrap }
+    .search{
+      flex:1; max-width:560px; display:flex; gap:8px; align-items:center;
+      background:var(--card); padding:8px; border-radius:10px; box-shadow:var(--shadow);
+    }
+    .search input{ border:0; outline:none; padding:10px; background:transparent; color:var(--text); width:100% }
+    .filter{ display:flex; gap:8px; align-items:center }
+
+    .chip{ padding:8px 12px; background:transparent; border-radius:999px; border:1px solid rgba(11,18,32,0.06); cursor:pointer; color:var(--muted); font-weight:600 }
+    .chip.active{ background:var(--primary); color:#fff; border-color:transparent }
+
+    /* ===========================
+       GRID / CARDS
+       =========================== */
+    .grid{ max-width:1200px; margin:28px auto; padding:0 20px; display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)) }
+    .card{
+      background:var(--card); border-radius:12px; overflow:hidden; box-shadow:var(--shadow);
+      transition: transform 360ms cubic-bezier(.2,.9,.3,1), box-shadow 360ms;
+      transform: translateY(6px);
+      opacity:0;
+      will-change:transform,opacity;
+    }
+    .card.visible{ transform:none; opacity:1 }
+    .card:hover{ transform:translateY(-8px); box-shadow: 0 18px 40px rgba(2,6,23,0.08) }
+
+    .card .thumb{ height:160px; width:100%; object-fit:cover; background:#ddd; display:block }
+    .card .body{ padding:14px 16px }
+    .card h4{ margin:0 0 8px; color:var(--primary); font-size:1.05rem }
+    .card p{ margin:0; color:var(--muted); font-size:0.95rem; line-height:1.5 }
+
+    .meta{ margin-top:12px; display:flex; gap:8px; align-items:center; justify-content:space-between; color:var(--muted); font-size:13px }
+    .badge{ padding:6px 10px; border-radius:999px; background: linear-gradient(90deg, rgba(26,42,108,0.06), rgba(255,255,255,0.02)); color:var(--primary); font-weight:700 }
+
+    /* ===========================
+       FOOTER
+       =========================== */
+    footer{ margin-top:44px; padding:34px 20px; background:var(--card); border-top:1px solid rgba(11,18,32,0.04); color:var(--muted) }
+    footer .wrap{ max-width:var(--container); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    footer .left{ display:flex; gap:12px; align-items:center; color:var(--muted) }
+    footer a{ color:var(--muted); text-decoration:none }
+
+    /* ===========================
+       UTILITIES & ANIMATIONS
+       =========================== */
+    .sr-only{ position:absolute; left:-9999px }
+    @keyframes float { from{ transform:translateY(0)} to{ transform:translateY(-6px)} }
+
+    /* responsive */
+    @media (max-width:1024px){ .hero{ flex-direction:column; gap:18px } .hero-right{ width:100% } .nav-links { display:none } .hamburger { display:flex } }
+    @media (max-width:640px){ .grid{ gap:14px } .hero{ padding:28px 16px } .controls-row{ gap:8px } .search{ max-width:100% } }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="header-wrap" role="banner">
+    <div class="navbar">
+      <div class="container">
+        <div class="brand" aria-hidden="false">
+          <img src="assets/logo_hima.png" alt="Logo HIMATEKKOM">
+          <div class="brand-text">HIMATEKKOM GUNADARMA</div>
+        </div>
+
+        <nav class="nav-links" role="navigation" aria-label="Main navigation">
+          <a href="index.html" data-key="nav-home">Beranda</a>
+          <a href="proker.html" class="active" data-key="nav-proker">Proker</a>
+          <a href="informasi.html" data-key="nav-info">Informasi</a>
+          <a href="pendaftaran.html" data-key="nav-daftar">Pendaftaran</a>
+          <a href="tentang.html" data-key="nav-about">Tentang</a>
+
+          <div class="nav-dropdown" style="position:relative">
+            <a href="#" class="nav-link">Struktur ▾</a>
+            <div class="dropdown-menu" style="display:none; position:absolute; top:110%; left:0; min-width:220px;">
+              <a href="struktur-bph.html">Badan Pengurus Harian</a>
+              <a href="struktur-humas.html">Hubungan Masyarakat</a>
+              <a href="struktur-mediainfo.html">Media Kreatif</a>
+              <a href="struktur-psdm.html">Pengembangan SDM</a>
+              <a href="struktur-organisasi.html">Organisasi</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="controls" aria-hidden="false">
+          <div class="lang-switch" role="tablist" aria-label="Language">
+            <button id="lang-id" class="lang-btn active" aria-pressed="true">ID</button>
+            <button id="lang-en" class="lang-btn" aria-pressed="false">EN</button>
+          </div>
+
+          <div id="theme-toggle" class="theme-toggle" role="button" aria-pressed="false" title="Toggle theme">
+            <div class="dot" aria-hidden="true"></div>
+          </div>
+
+          <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- mobile panel -->
+    <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="proker.html" class="active">Proker</a>
+        <a href="informasi.html">Informasi</a>
+        <a href="pendaftaran.html">Pendaftaran</a>
+        <a href="tentang.html">Tentang</a>
+        <div style="height:12px"></div>
+        <div style="display:flex;gap:8px">
+          <button id="mobile-lang-id" class="lang-btn active">ID</button>
+          <button id="mobile-lang-en" class="lang-btn">EN</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero container" aria-labelledby="prokerTitle">
+      <div class="hero-left">
+        <h1 id="prokerTitle">Program Kerja HIMATEKKOM</h1>
+        <p class="lead">Dengan berbagai program yang dirancang untuk mengembangkan skill, jejaring, dan kontribusi sosial — pilih kegiatan yang paling sesuai dengan minatmu.</p>
+        <div class="hero-cta">
+          <button class="btn primary" id="cta-daftar">Daftar Sekarang</button>
+          <a href="#programs" class="btn ghost">Lihat Semua Proker</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-card">
+          <h4 style="margin:0 0 8px">Highlight — HIMATEKKOM Fest</h4>
+          <p style="margin:0;color:var(--muted)">Festival tahunan yang menampilkan karya teknologi mahasiswa, lomba, dan workshop intensif.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- intro -->
+    <section class="intro">
+      <p>HIMATEKKOM menyelenggarakan kegiatan mulai dari seminar, workshop, pengabdian masyarakat, hingga lomba untuk mendukung pengembangan soft dan hard skill mahasiswa Teknik Komputer.</p>
+    </section>
+
+    <!-- controls: search & filter -->
+    <section class="controls-row">
+      <div class="search" role="search" aria-label="Cari proker">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:.6"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="searchInput" type="search" placeholder="Cari proker (misal: seminar, IoT, lomba)..." aria-label="Cari proker">
+      </div>
+
+      <div class="filter">
+        <button class="chip active" data-filter="all">Semua</button>
+        <button class="chip" data-filter="skill">Skill</button>
+        <button class="chip" data-filter="community">Community</button>
+        <button class="chip" data-filter="competition">Competition</button>
+        <button class="chip" data-filter="festival">Festival</button>
+      </div>
+    </section>
+
+    <!-- programs grid -->
+    <section id="programs" class="grid" aria-live="polite">
+      <!-- Cards: image path use assets/... replace as needed -->
+      <article class="card" data-tags="skill seminar">
+        <img class="thumb" src="assets/seminal.jpg" alt="Seminar Teknologi">
+        <div class="body">
+          <h4>Seminar Teknologi Terkini</h4>
+          <p>Seminar menghadirkan pembicara dari industri & akademisi untuk membahas AI, cybersecurity, dan tren teknologi.</p>
+          <div class="meta">
+            <span class="badge">Skill</span>
+            <small>Rutin tiap semester • Gratis/berbayar</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="skill workshop">
+        <img class="thumb" src="assets/iot_workshop.jpg" alt="Workshop IoT">
+        <div class="body">
+          <h4>Workshop IoT & Embedded Systems</h4>
+          <p>Praktik langsung membangun prototype berbasis mikrokontroler untuk pengalaman hands-on.</p>
+          <div class="meta">
+            <span class="badge">Skill</span>
+            <small>Terbatas • Berbayar</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="community pengabdian">
+        <img class="thumb" src="assets/pengabdian.jpg" alt="Pengabdian Masyarakat">
+        <div class="body">
+          <h4>Pengabdian Masyarakat</h4>
+          <p>Kegiatan sosial untuk menerapkan solusi teknologi pada permasalahan lokal masyarakat sekitar kampus.</p>
+          <div class="meta">
+            <span class="badge">Community</span>
+            <small>Proyek jangka panjang</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="competition lomba">
+        <img class="thumb" src="assets/lomba_coding.jpg" alt="Lomba Coding">
+        <div class="body">
+          <h4>Lomba Desain & Coding</h4>
+          <p>Kompetisi tahunan internal untuk menguji kreativitas dan kemampuan teknis mahasiswa.</p>
+          <div class="meta">
+            <span class="badge">Competition</span>
+            <small>Open • Hadiah menarik</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="festival">
+        <img class="thumb" src="assets/fest.jpg" alt="HIMATEKKOM Fest">
+        <div class="body">
+          <h4>HIMATEKKOM Fest</h4>
+          <p>Festival gabungan: pameran proyek, workshop mini, dan acara networking antar jurusan.</p>
+          <div class="meta">
+            <span class="badge">Festival</span>
+            <small>Event tahunan</small>
+          </div>
+        </div>
+      </article>
+
+      <!-- duplicate cards to show responsive grid; you can remove or edit -->
+      <article class="card" data-tags="skill workshop">
+        <img class="thumb" src="assets/hands-on.jpg" alt="Hands-on">
+        <div class="body">
+          <h4>Bootcamp Pengembangan Aplikasi</h4>
+          <p>Bootcamp intensif membangun aplikasi full-stack dengan mentor dari industri.</p>
+          <div class="meta">
+            <span class="badge">Skill</span>
+            <small>Limited seats</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="community">
+        <img class="thumb" src="assets/community.jpg" alt="Community">
+        <div class="body">
+          <h4>Sharing Komunitas & Studi Kasus</h4>
+          <p>Sesi berbagi pengalaman project, riset, dan peluang magang bagi mahasiswa.</p>
+          <div class="meta">
+            <span class="badge">Community</span>
+            <small>Monthly meetups</small>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- CTA small -->
+    <section style="max-width:1100px;margin:24px auto;padding:0 20px;text-align:center">
+      <button class="btn primary" id="cta-contact">Hubungi Kami untuk Kolaborasi</button>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap container">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img src="assets/logo_hima.png" alt="logo" style="height:36px;border-radius:8px;box-shadow:var(--shadow)">
+        <div style="font-weight:700;">HIMATEKKOM Gunadarma</div>
+      </div>
+      <div style="text-align:right;">
+        <div>© <span id="year"></span> HIMATEKKOM — All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===========================
+       JAVASCRIPT (INLINE)
+       =========================== -->
+  <script>
+    (function(){
+      /* ---------- helpers ---------- */
+      const $ = s => document.querySelector(s);
+      const $$ = s => Array.from(document.querySelectorAll(s));
+      const html = document.documentElement;
+
+      /* ---------- init year ---------- */
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      /* ---------- theme (data-theme on html) ---------- */
+      const THEME_KEY = 'himatek_theme';
+      const themeToggle = $('#theme-toggle');
+
+      function setTheme(t){
+        html.setAttribute('data-theme', t);
+        localStorage.setItem(THEME_KEY, t);
+        if(themeToggle) themeToggle.setAttribute('aria-pressed', t === 'dark');
+      }
+      (function initTheme(){
+        const saved = localStorage.getItem(THEME_KEY);
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches;
+        setTheme(saved || (prefersDark ? 'dark' : 'light'));
+      })();
+
+      if(themeToggle){
+        themeToggle.addEventListener('click', ()=> {
+          const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        });
+      }
+
+      /* ---------- mobile panel / burger ---------- */
+      const burger = $('#hamburger');
+      const panel = $('#mobile-panel');
+      if(burger && panel){
+        burger.addEventListener('click', ()=>{
+          const open = panel.classList.toggle('open');
+          burger.setAttribute('aria-expanded', open);
+          panel.setAttribute('aria-hidden', !open);
+        });
+        // close on link click
+        panel.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=> {
+          panel.classList.remove('open');
+          burger.setAttribute('aria-expanded', false);
+          panel.setAttribute('aria-hidden', true);
+        }));
+      }
+
+      /* ---------- simple dropdown behavior for desktop (keyboard accessible) ---------- */
+      const navDropdown = document.querySelector('.nav-dropdown');
+      if(navDropdown){
+        const link = navDropdown.querySelector('.nav-link');
+        const menu = navDropdown.querySelector('.dropdown-menu');
+        // show on hover for pointer devices
+        navDropdown.addEventListener('mouseenter', ()=> menu.style.display='flex');
+        navDropdown.addEventListener('mouseleave', ()=> menu.style.display='none');
+        // keyboard
+        link.addEventListener('focus', ()=> menu.style.display='flex');
+        link.addEventListener('blur', ()=> menu.style.display='none');
+      }
+
+      /* ---------- language switch (simple) ---------- */
+      function applyLang(lang){
+        // set button states
+        $$('.lang-btn').forEach(b => {
+          b.classList.toggle('active', b.id.endsWith(lang));
+          b.setAttribute('aria-pressed', b.id.endsWith(lang));
+        });
+        // small example: change page title text
+        const title = $('.hero h1');
+        if(!title) return;
+        if(lang === 'en'){
+          title.textContent = 'Work Programs — HIMATEKKOM';
+          document.title = 'Work Programs — HIMATEKKOM Gunadarma';
+        } else {
+          title.textContent = 'Program Kerja HIMATEKKOM';
+          document.title = 'Program Kerja — HIMATEKKOM Gunadarma';
+        }
+      }
+      $('#lang-id').addEventListener('click', ()=> applyLang('id'));
+      $('#lang-en').addEventListener('click', ()=> applyLang('en'));
+      // mobile copies
+      $('#mobile-lang-id')?.addEventListener('click', ()=> applyLang('id'));
+      $('#mobile-lang-en')?.addEventListener('click', ()=> applyLang('en'));
+
+      /* ---------- search & filter ---------- */
+      const searchInput = $('#searchInput');
+      const chips = $$('.chip');
+      const cards = $$('.card');
+
+      function normalize(s){ return String(s||'').toLowerCase(); }
+
+      function filterCards(query, tag){
+        const q = normalize(query);
+        cards.forEach(c=>{
+          const tags = normalize(c.dataset.tags || '');
+          const text = normalize(c.textContent || '');
+          const matchesQuery = !q || text.includes(q);
+          const matchesTag = (tag === 'all') || tags.includes(tag);
+          if(matchesQuery && matchesTag) c.style.display = '';
+          else c.style.display = 'none';
+        });
+        // trigger reveal observer on visible ones
+        revealObserver && revealObserver.disconnect() && observeVisibleCards();
+      }
+
+      // chips click
+      chips.forEach(ch => ch.addEventListener('click', ()=>{
+        chips.forEach(x=>x.classList.remove('active'));
+        ch.classList.add('active');
+        const tag = ch.dataset.filter || 'all';
+        filterCards(searchInput.value || '', tag);
+      }));
+
+      // search input
+      searchInput.addEventListener('input', (e)=>{
+        const activeChip = document.querySelector('.chip.active');
+        const tag = activeChip ? activeChip.dataset.filter : 'all';
+        filterCards(e.target.value, tag);
+      });
+
+      /* ---------- reveal on scroll (IntersectionObserver) ---------- */
+      const revealObserver = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      function observeVisibleCards(){
+        $$('.card').forEach(card=>{
+          if(card.style.display === 'none') { card.classList.remove('visible'); return; }
+          revealObserver.observe(card);
+        });
+      }
+      // init
+      observeVisibleCards();
+
+      /* ---------- CTA buttons (small interactions) ---------- */
+      $('#cta-daftar')?.addEventListener('click', ()=> {
+        window.location.href = 'pendaftaran.html';
+      });
+      $('#cta-contact')?.addEventListener('click', ()=> {
+        alert('Silakan hubungi himatekkom@example.com untuk kolaborasi — contoh interaksi.');
+      });
+
+      /* ---------- keyboard accessibility: close mobile panel on ESC ---------- */
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape'){
+          if(panel && panel.classList.contains('open')) {
+            panel.classList.remove('open');
+            burger?.setAttribute('aria-expanded', false);
+            panel?.setAttribute('aria-hidden', true);
+          }
+        }
+      });
+
+      /* ---------- minor: close dropdown when clicking outside ---------- */
+      document.addEventListener('click', (e)=>{
+        if(!navDropdown) return;
+        if(!navDropdown.contains(e.target)) {
+          const menu = navDropdown.querySelector('.dropdown-menu');
+          if(menu) menu.style.display = 'none';
+        }
+      });
+
+      /* ---------- image lazy fallback (if assets missing) ---------- */
+      $$('img.thumb').forEach(img=>{
+        img.addEventListener('error', ()=> {
+          img.style.background = 'linear-gradient(135deg,#e6eefc, #fff)';
+          img.src = 'https://via.placeholder.com/800x450?text=Image';
+        });
+      });
+
+      /* re-run observer after window resize (layout changes) */
+      let resizeTimer;
+      window.addEventListener('resize', ()=>{
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(()=> observeVisibleCards(), 150);
+      });
+
+    })();
+  </script>
+</body>
+</html>
