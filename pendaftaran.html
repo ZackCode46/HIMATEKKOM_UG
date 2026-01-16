@@ -557,6 +557,14 @@
         // 🔥 INI BAGIAN PENTING: KONEKSI KE PYTHON (FLASK)
         document.getElementById('daftarForm').addEventListener('submit', async (e) => {
           e.preventDefault();
+          fetch('http://localhost:5000/api/pendaftaran', {
+           method: 'POST',
+           headers: {
+           'Content-Type': 'application/json'
+           },
+           body: JSON.stringify(payload)
+             });
+
 
           const data = {
             nama: document.getElementById('nama').value,
@@ -608,4 +616,5 @@
     </div>
   </footer>
 </body>
+
 </html>
