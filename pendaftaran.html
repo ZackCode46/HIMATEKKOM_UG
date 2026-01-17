@@ -496,8 +496,7 @@
   function setTheme(theme) {
     doc.setAttribute('data-theme', theme);
     localStorage.setItem(THEMESTORAGE, theme);
-    const toggle = $('#theme-toggle');
-    if (toggle) toggle.setAttribute('aria-pressed', theme === 'dark');
+    $('#theme-toggle')?.setAttribute('aria-pressed', theme === 'dark');
   }
 
   function initTheme() {
@@ -563,14 +562,10 @@
     applyLanguage(localStorage.getItem(LANG_KEY) || 'id');
     initBurger();
 
-    /* theme toggle */
     $('#theme-toggle')?.addEventListener('click', () => {
-      setTheme(
-        doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
-      );
+      setTheme(doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     });
 
-    /* language buttons */
     $$('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         applyLanguage(btn.id.endsWith('en') ? 'en' : 'id');
@@ -578,12 +573,10 @@
     });
 
     /* =====================
-       FORM SUBMIT (APPS SCRIPT)
+       FORM SUBMIT
     ===================== */
     const form = $('#daftarForm');
     const hasil = $('#hasil');
-
-    if (!form) return;
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -620,6 +613,7 @@
 })();
 </script>
 
+
   <!-- FOOTER -->
   <footer>
     <div class="wrap container">
@@ -635,6 +629,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
