@@ -459,12 +459,22 @@
   <div class="form-wrapper">
     <h1>Formulir Pendaftaran HIMATEKKOM</h1>
     <form id="daftarForm">
-      <input type="text" id="nama" placeholder="Nama Lengkap" required>
-      <input type="number" id="npm" placeholder="NPM" required>
-      <input type="text" id="kelas" placeholder="Kelas" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="number" id="no_telp" placeholder="Nomor Telepon" required>
-      <select id="jurusan" required>
+      <input type="text" id="nama" name="nama" placeholder="Nama Lengkap" required>
+
+      <input type="number" id="npm" name="npm" placeholder="NPM" required>
+
+      <input type="text" id="kelas" name="kelas" placeholder="Kelas" required>
+
+      <input type="email" id="email" name="email" placeholder="Email" required>
+
+      <input type="number" id="no_telp" name="no_telp" placeholder="Nomor Telepon" required>
+
+      <select id="jurusan" name="jurusan" required>
+
+      <select id="divisi" name="divisi" required>
+
+      <input type="text" id="pengalaman" name="pengalaman" placeholder="Pengalaman Organisasi" required>
+
         <option value="">Pilih Jurusan</option>
         <option value="Teknik Komputer">Teknik Komputer</option>
       </select>
@@ -584,6 +594,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
