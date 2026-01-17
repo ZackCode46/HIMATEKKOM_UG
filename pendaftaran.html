@@ -578,21 +578,15 @@
     /* =====================
        FORM SUBMIT
     ===================== */
-    $('#daftarForm').addEventListener('submit', async e => {
+    const form = $('#daftarForm');
+    const hasil = $('#hasil');
+
+    form.addEventListener('submit', async e => {
       e.preventDefault();
 
-      const hasil = $('#hasil');
-      hasil.textContent = 'Mengirim data...';
+      hasil.innerHTML = '<p>Mengirim data...</p>';
 
-      const formData = new FormData();
-      formData.append('nama', $('#nama').value);
-      formData.append('npm', $('#npm').value);
-      formData.append('kelas', $('#kelas').value);
-      formData.append('email', $('#email').value);
-      formData.append('no_telp', $('#no_telp').value);
-      formData.append('jurusan', $('#jurusan').value);
-      formData.append('divisi', $('#divisi').value);
-      formData.append('pengalaman', $('#pengalaman').value);
+      const formData = new FormData(form);
 
       try {
         const res = await fetch(
@@ -603,21 +597,24 @@
           }
         );
 
-        const text = await res.text();
-        hasil.style.color = 'green';
-        hasil.textContent = 'Pendaftaran berhasil!';
-        $('#daftarForm').reset();
+        const json = await res.json();
+
+        if (json.status === 'success') {
+          hasil.innerHTML = `<p style="color:green">${json.message}</p>`;
+          form.reset();
+        } else {
+          hasil.innerHTML = `<p style="color:red">${json.message}</p>`;
+        }
 
       } catch (err) {
+        hasil.innerHTML =
+          '<p style="color:red">Gagal mengirim data. Cek koneksi.</p>';
         console.error(err);
-        hasil.style.color = 'red';
-        hasil.textContent = 'Gagal mengirim data!';
       }
     });
   });
 })();
 </script>
-
   <!-- FOOTER -->
   <footer>
     <div class="wrap container">
@@ -633,6 +630,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
