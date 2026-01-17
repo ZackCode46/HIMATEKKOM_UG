@@ -488,15 +488,12 @@
   const $$ = s => Array.from(document.querySelectorAll(s));
   const doc = document.documentElement;
 
-  /* =====================
-     THEME
-  ===================== */
   const THEMESTORAGE = 'himatek_theme';
+  const LANG_KEY = 'himatek_lang';
 
-  function setTheme(theme) {
-    doc.setAttribute('data-theme', theme);
-    localStorage.setItem(THEMESTORAGE, theme);
-    $('#theme-toggle')?.setAttribute('aria-pressed', theme === 'dark');
+  function setTheme(t) {
+    doc.setAttribute('data-theme', t);
+    localStorage.setItem(THEMESTORAGE, t);
   }
 
   function initTheme() {
@@ -505,76 +502,35 @@
     setTheme(saved || (prefersDark ? 'dark' : 'light'));
   }
 
-  /* =====================
-     LANGUAGE
-  ===================== */
-  const LANG_KEY = 'himatek_lang';
-
   const i18n = {
     id: {
-      'nav-home': 'Beranda',
-      'nav-proker': 'Proker',
-      'nav-info': 'Informasi',
-      'nav-daftar': 'Pendaftaran',
-      'nav-about': 'Tentang'
+      'nav-home':'Beranda',
+      'nav-proker':'Proker',
+      'nav-info':'Informasi',
+      'nav-daftar':'Pendaftaran',
+      'nav-about':'Tentang'
     },
     en: {
-      'nav-home': 'Home',
-      'nav-proker': 'Programs',
-      'nav-info': 'Information',
-      'nav-daftar': 'Registration',
-      'nav-about': 'About'
+      'nav-home':'Home',
+      'nav-proker':'Programs',
+      'nav-info':'Information',
+      'nav-daftar':'Registration',
+      'nav-about':'About'
     }
   };
 
   function applyLanguage(lang) {
     localStorage.setItem(LANG_KEY, lang);
     $$('[data-key]').forEach(el => {
-      const key = el.dataset.key;
-      if (i18n[lang][key]) el.textContent = i18n[lang][key];
-    });
-
-    $$('.lang-btn').forEach(btn =>
-      btn.classList.toggle('active', btn.id.endsWith(lang))
-    );
-  }
-
-  /* =====================
-     BURGER
-  ===================== */
-  function initBurger() {
-    const burger = $('#hamburger');
-    const panel = $('#mobile-panel');
-    if (!burger || !panel) return;
-
-    burger.addEventListener('click', () => {
-      const open = panel.classList.toggle('active');
-      burger.setAttribute('aria-expanded', open);
-      panel.setAttribute('aria-hidden', !open);
+      const k = el.dataset.key;
+      if (i18n[lang][k]) el.textContent = i18n[lang][k];
     });
   }
 
-  /* =====================
-     DOM READY
-  ===================== */
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     applyLanguage(localStorage.getItem(LANG_KEY) || 'id');
-    initBurger();
 
-    $('#theme-toggle')?.addEventListener('click', () => {
-      setTheme(doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    });
-
-    $$('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        applyLanguage(btn.id.endsWith('en') ? 'en' : 'id');
-      });
-    });
-
-    /* =====================
-       FORM SUBMIT
-    ===================== */
     const form = $('#daftarForm');
     const hasil = $('#hasil');
 
@@ -590,7 +546,7 @@
           'https://script.google.com/macros/s/AKfycbwumLidOWJjjHMA56pGv2fIwAsahjnZP6dafOpXBRzPVAO1h4V3-feDo1kpQPMffitb/exec',
           {
             method: 'POST',
-            body: formData
+            body: formData // ❗ JANGAN pakai headers
           }
         );
 
@@ -604,15 +560,14 @@
         }
 
       } catch (err) {
-        hasil.innerHTML =
-          '<p style="color:red">Gagal mengirim data. Cek koneksi.</p>';
         console.error(err);
+        hasil.innerHTML =
+          '<p style="color:red">Gagal mengirim data. Server tidak merespon.</p>';
       }
     });
   });
 })();
 </script>
-
 
   <!-- FOOTER -->
   <footer>
@@ -629,6 +584,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
