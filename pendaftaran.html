@@ -482,7 +482,7 @@
     <div id="hasil"></div>
   </div>
 
- <script>
+<script>
 (function () {
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
@@ -565,10 +565,12 @@
 
     /* theme toggle */
     $('#theme-toggle')?.addEventListener('click', () => {
-      setTheme(doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      setTheme(
+        doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+      );
     });
 
-    /* lang buttons */
+    /* language buttons */
     $$('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         applyLanguage(btn.id.endsWith('en') ? 'en' : 'id');
@@ -576,10 +578,12 @@
     });
 
     /* =====================
-       FORM SUBMIT
+       FORM SUBMIT (APPS SCRIPT)
     ===================== */
     const form = $('#daftarForm');
     const hasil = $('#hasil');
+
+    if (!form) return;
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -615,6 +619,7 @@
   });
 })();
 </script>
+
   <!-- FOOTER -->
   <footer>
     <div class="wrap container">
@@ -630,6 +635,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
