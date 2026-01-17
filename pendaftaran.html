@@ -504,8 +504,8 @@
       const LANG_KEY = 'himatek_lang';
       let currentLang = localStorage.getItem(LANG_KEY) || 'id';
       const i18n = {
-        id: { 'nav-home':'Beranda','nav-proker':'Proker','nav-info':'Informasi','nav-daftar':'Pendaftaran','nav-about':'Tentang' },
-        en: { 'nav-home':'Home','nav-proker':'Programs','nav-info':'Announcements','nav-daftar':'Register','nav-about':'About' }
+        id: { 'nav-home':'Beranda','nav-proker':'Proker','nav-info':'Informasi','nav-daftar':'Pendaftaran','nav-about', 'Tentang', 'Nama Lengkap', 'NPM', 'Kelas', 'Email', 'Nomor Telepon', 'Pilih Jurusan', 'Teknik Komputer', 'Pilih Divisi', 'Departemen Media Kreatif', 'Departemen Pengembangan SDM', 'Hubungan Masyarakat' : 'Organisasi' },
+        en: { 'nav-home':'Home','nav-proker':'Programs','nav-info':'Announcements','nav-daftar':'Register','nav-about','About', 'Full Name', 'Student ID', 'Class', 'Email', 'Phone Number', 'Select Major', 'Computer Engineering', 'Select Division', 'Creative Media Department', 'HR Development Department', 'Public Relations' : 'Organization'}
       };
 
       function applyLanguage(lang) {
@@ -572,7 +572,7 @@
           hasilDiv.innerHTML = '<p style="color: #1a2a6c;">Mengirim data...</p>';
 
           try {
-            const res = await fetch('http://localhost:5000/daftar', {
+            const res = await fetch('https://script.google.com/macros/s/AKFYCB_xxxxxxxx/exec', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(data)
@@ -585,7 +585,7 @@
               document.getElementById('daftarForm').reset(); // Kosongkan form
             }
           } catch (err) {
-            hasilDiv.innerHTML = '<p style="color: red">Gagal mengirim data. Pastikan server Python berjalan di localhost:5000!</p>';
+            hasilDiv.innerHTML = '<p style="color: red">Gagal mengirim data. Pastikan anda Terhubung dengan internet!</p>';
             console.error('Error:', err);
           }
         });
@@ -608,4 +608,5 @@
   </footer>
 </body>
 </html>
+
 
