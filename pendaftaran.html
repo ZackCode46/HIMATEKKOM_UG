@@ -469,23 +469,20 @@
 
       <input type="number" id="no_telp" name="no_telp" placeholder="Nomor Telepon" required>
 
-      <select id="jurusan" name="jurusan" required>
+      <select name="jurusan" required>
+       <option value="">Pilih Jurusan</option>
+       <option value="Teknik Komputer">Teknik Komputer</option>
+      </select>
 
-      <select id="divisi" name="divisi" required>
-
+      <select name="divisi" required>
+       <option value="">Pilih Divisi</option>
+       <option value="Media Kreatif">Media Kreatif</option>
+       <option value="PSDM">PSDM</option>
+       <option value="Humas">Humas</option>
+       <option value="Organisasi">Organisasi</option>
+      </select>
+      
       <input type="text" id="pengalaman" name="pengalaman" placeholder="Pengalaman Organisasi" required>
-
-        <option value="">Pilih Jurusan</option>
-        <option value="Teknik Komputer">Teknik Komputer</option>
-      </select>
-      <select id="divisi" required>
-        <option value="">Pilih Divisi</option>
-        <option value="Departemen Media Kreatif">Departemen Media Kreatif</option>
-        <option value="Departemen Pengembangan Sumber Daya Masyarakat">Departemen Pengembangan SDM</option>
-        <option value="Departemen Hubungan Masyarakat">Hubungan Masyarakat</option>
-        <option value="Departemen Organisasi">Organisasi</option>
-      </select>
-      <input type="text" id="pengalaman" placeholder="Pengalaman Organisasi" required>
       <button type="submit">Kirim Pendaftaran</button>
     </form>
     <!-- Tempat menampilkan pesan sukses/error -->
@@ -594,6 +591,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
