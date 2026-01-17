@@ -482,116 +482,141 @@
     <div id="hasil"></div>
   </div>
 
-  <script>
-    (function () {
-      const $ = sel => document.querySelector(sel);
-      const $$ = sel => Array.from(document.querySelectorAll(sel));
+ <script>
+(function () {
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const doc = document.documentElement;
 
-      const doc = document.documentElement;
-      const THEMESTORAGE = 'himatek_theme';
-      function setTheme(t) {
-        doc.setAttribute('data-theme', t);
-        localStorage.setItem(THEMESTORAGE, t);
-        const toggle = $('#theme-toggle');
-        if (toggle) toggle.setAttribute('aria-pressed', t === 'dark');
-      }
-      const initTheme = () => {
-        const saved = localStorage.getItem(THEMESTORAGE);
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setTheme(saved || (prefersDark ? 'dark' : 'light'));
-      };
+  /* =====================
+     THEME
+  ===================== */
+  const THEMESTORAGE = 'himatek_theme';
 
-      const LANG_KEY = 'himatek_lang';
-      let currentLang = localStorage.getItem(LANG_KEY) || 'id';
-      const i18n = {
-        id: { 'nav-home':'Beranda','nav-proker':'Proker','nav-info':'Informasi','nav-daftar':'Pendaftaran','nav-about', 'Tentang', 'Nama Lengkap', 'NPM', 'Kelas', 'Email', 'Nomor Telepon', 'Pilih Jurusan', 'Teknik Komputer', 'Pilih Divisi', 'Departemen Media Kreatif', 'Departemen Pengembangan SDM', 'Hubungan Masyarakat' : 'Organisasi' },
-        en: { 'nav-home':'Home','nav-proker':'Programs','nav-info':'Announcements','nav-daftar':'Register','nav-about','About', 'Full Name', 'Student ID', 'Class', 'Email', 'Phone Number', 'Select Major', 'Computer Engineering', 'Select Division', 'Creative Media Department', 'HR Development Department', 'Public Relations' : 'Organization'}
-      };
+  function setTheme(theme) {
+    doc.setAttribute('data-theme', theme);
+    localStorage.setItem(THEMESTORAGE, theme);
+    const toggle = $('#theme-toggle');
+    if (toggle) toggle.setAttribute('aria-pressed', theme === 'dark');
+  }
 
-      function applyLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem(LANG_KEY, lang);
-        $$('[data-key]').forEach(el => {
-          const k = el.getAttribute('data-key');
-          if (i18n[lang][k]) el.textContent = i18n[lang][k];
-        });
-        $$('.lang-btn').forEach(b => b.classList.toggle('active', b.id.endsWith(lang)));
-      }
+  function initTheme() {
+    const saved = localStorage.getItem(THEMESTORAGE);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(saved || (prefersDark ? 'dark' : 'light'));
+  }
 
-      function initBurger() {
-        const burger = $('#hamburger');
-        const panel = $('#mobile-panel');
-        if (!burger || !panel) return;
+  /* =====================
+     LANGUAGE
+  ===================== */
+  const LANG_KEY = 'himatek_lang';
 
-        burger.addEventListener('click', () => {
-          const open = panel.classList.toggle('active');
-          burger.setAttribute('aria-expanded', open);
-          panel.setAttribute('aria-hidden', !open);
-        });
+  const i18n = {
+    id: {
+      'nav-home': 'Beranda',
+      'nav-proker': 'Proker',
+      'nav-info': 'Informasi',
+      'nav-daftar': 'Pendaftaran',
+      'nav-about': 'Tentang'
+    },
+    en: {
+      'nav-home': 'Home',
+      'nav-proker': 'Programs',
+      'nav-info': 'Information',
+      'nav-daftar': 'Registration',
+      'nav-about': 'About'
+    }
+  };
 
-        panel.querySelectorAll('a').forEach(a =>
-          a.addEventListener('click', () => {
-            panel.classList.remove('active');
-            burger.setAttribute('aria-expanded', false);
-            panel.setAttribute('aria-hidden', true);
-          })
-        );
-      }
+  function applyLanguage(lang) {
+    localStorage.setItem(LANG_KEY, lang);
+    $$('[data-key]').forEach(el => {
+      const key = el.dataset.key;
+      if (i18n[lang][key]) el.textContent = i18n[lang][key];
+    });
 
-      document.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        applyLanguage(currentLang);
-        initBurger();
+    $$('.lang-btn').forEach(btn =>
+      btn.classList.toggle('active', btn.id.endsWith(lang))
+    );
+  }
 
-        const themeToggle = $('#theme-toggle'); 
-        if (themeToggle) themeToggle.addEventListener('click', () => { 
-          const next = doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
-          setTheme(next); 
-        }); 
-        
-        $$('.lang-btn').forEach(b => b.addEventListener('click', () => { 
-          const lang = b.id.endsWith('en') ? 'en' : 'id'; 
-          applyLanguage(lang); 
-        }));
+  /* =====================
+     BURGER
+  ===================== */
+  function initBurger() {
+    const burger = $('#hamburger');
+    const panel = $('#mobile-panel');
+    if (!burger || !panel) return;
 
-        document.getElementById('daftarForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
+    burger.addEventListener('click', () => {
+      const open = panel.classList.toggle('active');
+      burger.setAttribute('aria-expanded', open);
+      panel.setAttribute('aria-hidden', !open);
+    });
+  }
 
-          const data = {
-            nama: document.getElementById('nama').value,
-            npm: document.getElementById('npm').value,
-            kelas: document.getElementById('kelas').value,
-            email: document.getElementById('email').value,
-            no_telp: document.getElementById('no_telp').value,
-            jurusan: document.getElementById('jurusan').value,
-            divisi: document.getElementById('divisi').value,
-            pengalaman: document.getElementById('pengalaman').value,
-          };
+  /* =====================
+     DOM READY
+  ===================== */
+  document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    applyLanguage(localStorage.getItem(LANG_KEY) || 'id');
+    initBurger();
 
-          const hasilDiv = document.getElementById('hasil');
-          hasilDiv.innerHTML = '<p style="color: #1a2a6c;">Mengirim data...</p>';
+    /* theme toggle */
+    $('#theme-toggle')?.addEventListener('click', () => {
+      setTheme(doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
 
-          try {
-            const res = await fetch('https://script.google.com/macros/s/AKfycbwumLidOWJjjHMA56pGv2fIwAsahjnZP6dafOpXBRzPVAO1h4V3-feDo1kpQPMffitb/exec', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            });
-
-            const result = await res.json();
-            hasilDiv.innerHTML = `<p style="color: ${res.ok ? 'green' : 'red'}">${result.message}</p>`;
-            
-            if (res.ok) {
-              document.getElementById('daftarForm').reset(); // Kosongkan form
-            }
-          } catch (err) {
-            hasilDiv.innerHTML = '<p style="color: red">Gagal mengirim data. Pastikan anda Terhubung dengan internet!</p>';
-            console.error('Error:', err);
-          }
-        });
+    /* lang buttons */
+    $$('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyLanguage(btn.id.endsWith('en') ? 'en' : 'id');
       });
-    })();
-  </script>
+    });
+
+    /* =====================
+       FORM SUBMIT
+    ===================== */
+    $('#daftarForm').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const hasil = $('#hasil');
+      hasil.textContent = 'Mengirim data...';
+
+      const formData = new FormData();
+      formData.append('nama', $('#nama').value);
+      formData.append('npm', $('#npm').value);
+      formData.append('kelas', $('#kelas').value);
+      formData.append('email', $('#email').value);
+      formData.append('no_telp', $('#no_telp').value);
+      formData.append('jurusan', $('#jurusan').value);
+      formData.append('divisi', $('#divisi').value);
+      formData.append('pengalaman', $('#pengalaman').value);
+
+      try {
+        const res = await fetch(
+          'https://script.google.com/macros/s/AKfycbwumLidOWJjjHMA56pGv2fIwAsahjnZP6dafOpXBRzPVAO1h4V3-feDo1kpQPMffitb/exec',
+          {
+            method: 'POST',
+            body: formData
+          }
+        );
+
+        const text = await res.text();
+        hasil.style.color = 'green';
+        hasil.textContent = 'Pendaftaran berhasil!';
+        $('#daftarForm').reset();
+
+      } catch (err) {
+        console.error(err);
+        hasil.style.color = 'red';
+        hasil.textContent = 'Gagal mengirim data!';
+      }
+    });
+  });
+})();
+</script>
 
   <!-- FOOTER -->
   <footer>
@@ -608,6 +633,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
