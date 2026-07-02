@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tanya Jawab — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="tanya">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Butuh Bantuan?</span>
+      <h2>Tanya Jawab</h2>
+      <p>Punya pertanyaan seputar HIMATEKKOM? Tanyakan langsung ke pengurus, jawaban akan tampil di sini.</p>
+    </div>
+
+    <div class="form-card reveal" style="margin-bottom:56px">
+      <div id="form-alert"></div>
+      <form id="ask-form">
+        <div class="form-grid" id="guest-fields">
+          <div class="field"><label for="nama">Nama</label><input type="text" id="nama" required></div>
+          <div class="field"><label for="email">Email</label><input type="email" id="email" required></div>
+        </div>
+        <div class="field full" style="margin-top:14px">
+          <label for="pertanyaan">Pertanyaanmu</label>
+          <textarea id="pertanyaan" required placeholder="Tulis pertanyaanmu di sini..."></textarea>
+        </div>
+        <div style="text-align:center;margin-top:18px">
+          <button type="submit" class="btn" id="ask-btn">Kirim Pertanyaan</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="section-head reveal">
+      <span class="eyebrow">FAQ</span>
+      <h2>Pertanyaan yang Sudah Dijawab</h2>
+    </div>
+    <div id="faq-list" class="grid reveal">
+      <div class="skeleton" style="height:140px"></div>
+      <div class="skeleton" style="height:140px"></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function initAskForm() {
+  try {
+    const res = await fetch('/api/auth/me');
+    const { user } = await res.json();
+    if (user) {
+      document.getElementById('guest-fields').style.display = 'none';
+      document.getElementById('nama').required = false;
+      document.getElementById('email').required = false;
+      window.__loggedInAsker = user;
+    }
+  } catch {}
+}
+
+document.getElementById('ask-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('ask-btn');
+  const alertBox = document.getElementById('form-alert');
+  btn.disabled = true; btn.textContent = 'Mengirim...';
+  alertBox.innerHTML = '';
+  try {
+    const payload = { pertanyaan: document.getElementById('pertanyaan').value };
+    if (!window.__loggedInAsker) {
+      payload.namaPenanya = document.getElementById('nama').value;
+      payload.emailPenanya = document.getElementById('email').value;
+    }
+    const res = await fetch('/api/pertanyaan', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal mengirim pertanyaan');
+    alertBox.innerHTML = '<div class="alert success">Pertanyaan berhasil dikirim! Admin akan menjawab secepatnya. Cek halaman ini atau Profil Saya untuk melihat jawabannya.</div>';
+    e.target.reset();
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert error">${err.message}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Kirim Pertanyaan';
+  }
+});
+
+async function loadFaq() {
+  try {
+    const res = await fetch('/api/pertanyaan');
+    const items = await res.json();
+    const box = document.getElementById('faq-list');
+    if (!items.length) {
+      box.innerHTML = '<div class="empty-state">Belum ada pertanyaan yang dijawab.</div>';
+      return;
+    }
+    box.innerHTML = items.map(i => `
+      <div class="card"><div class="body">
+        <span class="tag">Dijawab</span>
+        <h4>${HIMA.escapeHtml(i.pertanyaan)}</h4>
+        <p>${HIMA.escapeHtml(i.jawaban)}</p>
+        <div class="meta">Dijawab ${HIMA.formatDate(i.answeredAt)}</div>
+      </div></div>`).join('');
+  } catch {
+    document.getElementById('faq-list').innerHTML = '<div class="empty-state">Gagal memuat data.</div>';
+  }
+}
+
+document.addEventListener('layout:ready', () => { initAskForm(); loadFaq(); });
+</script>
+</body>
+</html>

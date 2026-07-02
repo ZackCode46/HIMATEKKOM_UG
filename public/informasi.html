@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Informasi & Pengumuman — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="informasi">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Berita & Pengumuman</span>
+      <h2>Informasi Terbaru</h2>
+      <p>Semua berita, pengumuman, dan pencapaian HIMATEKKOM ada di sini.</p>
+    </div>
+
+    <div id="filter-bar" class="filter-bar reveal"></div>
+    <div id="info-grid" class="grid reveal">
+      <div class="skeleton" style="height:200px"></div>
+      <div class="skeleton" style="height:200px"></div>
+      <div class="skeleton" style="height:200px"></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<!-- Modal detail -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title" style="margin:0"></h3>
+      <button class="btn secondary small" id="modal-close">×</button>
+    </div>
+    <div class="meta" id="modal-meta" style="margin-bottom:12px"></div>
+    <p id="modal-content"></p>
+  </div>
+</div>
+
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+let ALL_INFO = [];
+
+function openDetail(item) {
+  document.getElementById('modal-title').textContent = item.judul;
+  document.getElementById('modal-meta').textContent = `${item.kategori || 'Info'} • ${HIMA.formatDate(item.tanggal)}`;
+  document.getElementById('modal-content').textContent = item.konten || item.ringkasan;
+  document.getElementById('detail-modal').classList.add('open');
+}
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('detail-modal').classList.remove('open');
+});
+document.getElementById('detail-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'detail-modal') e.currentTarget.classList.remove('open');
+});
+
+function renderInfo(list) {
+  const grid = document.getElementById('info-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state">Belum ada informasi untuk kategori ini.</div>';
+    return;
+  }
+  const sorted = [...list].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+  grid.innerHTML = sorted.map((i, idx) => `
+    <article class="card" data-idx="${idx}" style="cursor:pointer">
+      ${HIMA.thumbOrPlaceholder(i.gambar, i.judul)}
+      <div class="body">
+        <span class="tag">${HIMA.escapeHtml(i.kategori || 'Info')}</span>
+        <h4>${HIMA.escapeHtml(i.judul)}</h4>
+        <p>${HIMA.escapeHtml(i.ringkasan)}</p>
+        <div class="meta">${HIMA.formatDate(i.tanggal)}</div>
+      </div>
+    </article>`).join('');
+  grid.querySelectorAll('.card').forEach((card, idx) => {
+    card.addEventListener('click', () => openDetail(sorted[idx]));
+  });
+}
+
+function renderFilters(cats) {
+  const bar = document.getElementById('filter-bar');
+  const chips = ['semua', ...cats];
+  bar.innerHTML = chips.map((c, i) => `<button class="filter-chip ${i===0?'active':''}" data-cat="${HIMA.escapeHtml(c)}">${HIMA.escapeHtml(c)}</button>`).join('');
+  bar.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      bar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const cat = chip.dataset.cat;
+      renderInfo(cat === 'semua' ? ALL_INFO : ALL_INFO.filter(i => (i.kategori||'').toLowerCase() === cat.toLowerCase()));
+    });
+  });
+}
+
+async function loadInfo() {
+  try {
+    const res = await fetch('/api/informasi');
+    ALL_INFO = await res.json();
+    const cats = [...new Set(ALL_INFO.map(i => i.kategori).filter(Boolean))];
+    renderFilters(cats);
+    renderInfo(ALL_INFO);
+  } catch (err) {
+    document.getElementById('info-grid').innerHTML = '<div class="empty-state">Gagal memuat data.</div>';
+  }
+}
+document.addEventListener('layout:ready', loadInfo);
+</script>
+</body>
+</html>

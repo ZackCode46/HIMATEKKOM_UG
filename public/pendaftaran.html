@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pendaftaran Anggota — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="pendaftaran">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Bergabung</span>
+      <h2>Formulir Pendaftaran Anggota</h2>
+      <p>Isi data diri kamu dengan lengkap dan benar untuk bergabung bersama HIMATEKKOM.</p>
+    </div>
+
+    <div class="form-card reveal">
+      <div id="hasil"></div>
+      <form id="daftarForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" id="nama" name="nama" placeholder="Nama lengkap" required>
+          </div>
+          <div class="field">
+            <label for="npm">NPM</label>
+            <input type="text" id="npm" name="npm" placeholder="NPM" required inputmode="numeric" pattern="[0-9]*">
+          </div>
+          <div class="field">
+            <label for="kelas">Kelas</label>
+            <input type="text" id="kelas" name="kelas" placeholder="Contoh: 2DC01" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="email@student.gunadarma.ac.id" required>
+          </div>
+          <div class="field">
+            <label for="no_telp">Nomor Telepon</label>
+            <input type="tel" id="no_telp" name="no_telp" placeholder="08xxxxxxxxxx" required>
+          </div>
+          <div class="field">
+            <label for="jurusan">Jurusan</label>
+            <select name="jurusan" id="jurusan" required>
+              <option value="">Pilih Jurusan</option>
+              <option value="Teknik Komputer">Teknik Komputer</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="divisi">Divisi yang Diminati</label>
+            <select name="divisi" id="divisi" required>
+              <option value="">Pilih Divisi</option>
+              <option value="Media Kreatif">Media Kreatif</option>
+              <option value="PSDM">PSDM</option>
+              <option value="Humas">Humas</option>
+              <option value="Organisasi">Organisasi</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="pengalaman">Pengalaman Organisasi</label>
+            <textarea id="pengalaman" name="pengalaman" placeholder="Ceritakan pengalaman organisasimu (boleh diisi 'Belum ada')" required></textarea>
+          </div>
+          <div class="field full">
+            <label for="motivasi">Motivasi Bergabung</label>
+            <textarea id="motivasi" name="motivasi" placeholder="Kenapa kamu ingin bergabung dengan HIMATEKKOM?" required></textarea>
+          </div>
+        </div>
+        <div style="margin-top:24px;text-align:center">
+          <button type="submit" class="btn" id="submitBtn">Kirim Pendaftaran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+const form = document.getElementById('daftarForm');
+const hasil = document.getElementById('hasil');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Mengirim...';
+  hasil.innerHTML = '';
+
+  const formData = new FormData(form);
+  try {
+    const res = await fetch(
+      'https://script.google.com/macros/s/AKfycbwtMpprmPvvLFJ-o3ExR4YKnnu1WGNW2XvK05QCYh2YZMt72f9CXp3Ew0QUhOM7f8gS/exec',
+      { method: 'POST', body: formData }
+    );
+    const json = await res.json();
+    if (json.status === 'success') {
+      hasil.innerHTML = `<div class="alert success">${HIMA.escapeHtml(json.message || 'Pendaftaran berhasil dikirim!')}</div>`;
+      form.reset();
+    } else {
+      hasil.innerHTML = `<div class="alert error">${HIMA.escapeHtml(json.message || 'Terjadi kesalahan.')}</div>`;
+    }
+  } catch (err) {
+    hasil.innerHTML = '<div class="alert error">Gagal mengirim data. Coba lagi beberapa saat lagi.</div>';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Kirim Pendaftaran';
+  }
+});
+</script>
+</body>
+</html>

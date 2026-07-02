@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Masuk — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="login">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container">
+    <div class="form-card reveal" style="max-width:420px">
+      <div style="text-align:center;margin-bottom:20px">
+        <img src="/assets/logo_hima.png" style="height:52px;margin:0 auto 10px;border-radius:10px">
+        <h2 style="margin-bottom:4px">Masuk ke Akunmu</h2>
+        <p style="margin:0">Belum punya akun? <a href="/register.html" style="color:var(--primary);font-weight:700">Daftar di sini</a></p>
+      </div>
+
+      <div id="alert-box"></div>
+
+      <a href="/api/auth/google" class="btn secondary" style="width:100%;margin-bottom:16px">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35.5 24 35.5c-6.9 0-12.5-5.6-12.5-12.5S17.1 10.5 24 10.5c3.2 0 6 1.2 8.2 3.1l5.7-5.7C34.4 4.9 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.2 0 6 1.2 8.2 3.1l5.7-5.7C34.4 6.9 29.5 5 24 5c-7.5 0-14 4.2-17.3 10.4z" transform="translate(0 -2)"/><path fill="#4CAF50" d="M24 45c5.4 0 10.2-1.8 13.9-4.9l-6.4-5.4c-2 1.4-4.6 2.2-7.5 2.2-5.3 0-9.7-3.2-11.4-7.7l-6.6 5.1C9.9 40.7 16.4 45 24 45z" transform="translate(0 -2)"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.4 5.4C41.5 35.8 45 30.4 45 24c0-1.2-.1-2.4-.4-3.5z" transform="translate(0 -2)"/></svg>
+        Masuk dengan Google
+      </a>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;color:var(--muted);font-size:.8rem">
+        <div style="flex:1;height:1px;background:var(--border)"></div>ATAU<div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+
+      <form id="login-form" style="display:flex;flex-direction:column;gap:14px">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn" id="submit-btn">Masuk</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const errMap = {
+  google_not_configured: 'Login dengan Google belum dikonfigurasi oleh admin website.',
+  google_state_invalid: 'Sesi login Google tidak valid, silakan coba lagi.',
+  google_failed: 'Login dengan Google gagal, silakan coba lagi.'
+};
+if (params.get('error') && errMap[params.get('error')]) {
+  document.addEventListener('layout:ready', () => {
+    document.getElementById('alert-box').innerHTML = `<div class="alert error">${errMap[params.get('error')]}</div>`;
+  });
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const alertBox = document.getElementById('alert-box');
+  btn.disabled = true; btn.textContent = 'Memproses...';
+  alertBox.innerHTML = '';
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: document.getElementById('email').value, password: document.getElementById('password').value })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Login gagal');
+    location.href = '/profil.html';
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert error">${err.message}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Masuk';
+  }
+});
+</script>
+</body>
+</html>

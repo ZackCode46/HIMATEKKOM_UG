@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Program Kerja — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="proker">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Kegiatan</span>
+      <h2>Program Kerja HIMATEKKOM</h2>
+      <p>Kumpulan program kerja yang dijalankan untuk mendukung pengembangan mahasiswa Teknik Komputer.</p>
+    </div>
+
+    <div id="filter-bar" class="filter-bar reveal"></div>
+    <div id="proker-grid" class="grid reveal">
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+let ALL_PROKER = [];
+
+function renderProker(list) {
+  const grid = document.getElementById('proker-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state">Belum ada program kerja untuk kategori ini.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => `
+    <article class="card">
+      ${HIMA.thumbOrPlaceholder(p.gambar, p.judul)}
+      <div class="body">
+        <span class="tag">${HIMA.escapeHtml(p.tag || 'Proker')}</span>
+        <h4>${HIMA.escapeHtml(p.judul)}</h4>
+        <p>${HIMA.escapeHtml(p.deskripsi)}</p>
+      </div>
+    </article>`).join('');
+}
+
+function renderFilters(tags) {
+  const bar = document.getElementById('filter-bar');
+  const chips = ['semua', ...tags];
+  bar.innerHTML = chips.map((t, i) => `<button class="filter-chip ${i===0?'active':''}" data-tag="${HIMA.escapeHtml(t)}">${HIMA.escapeHtml(t)}</button>`).join('');
+  bar.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      bar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const tag = chip.dataset.tag;
+      renderProker(tag === 'semua' ? ALL_PROKER : ALL_PROKER.filter(p => (p.tag || '').toLowerCase() === tag.toLowerCase()));
+    });
+  });
+}
+
+async function loadProker() {
+  try {
+    const res = await fetch('/api/proker');
+    ALL_PROKER = await res.json();
+    const tags = [...new Set(ALL_PROKER.map(p => p.tag).filter(Boolean))];
+    renderFilters(tags);
+    renderProker(ALL_PROKER);
+  } catch (err) {
+    document.getElementById('proker-grid').innerHTML = '<div class="empty-state">Gagal memuat data.</div>';
+  }
+}
+document.addEventListener('layout:ready', loadProker);
+</script>
+</body>
+</html>

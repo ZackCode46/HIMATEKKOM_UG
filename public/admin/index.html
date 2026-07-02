@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel Admin — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-theme="light">
+
+<!-- ============ LOGIN VIEW ============ -->
+<div id="login-view" class="login-shell">
+  <div class="login-card">
+    <img src="/assets/logo_hima.png" alt="Logo">
+    <h2 style="margin-bottom:4px">Panel Admin</h2>
+    <p style="margin-bottom:20px">HIMATEKKOM Gunadarma</p>
+    <div id="login-alert"></div>
+    <form id="login-form" style="display:flex;flex-direction:column;gap:14px;text-align:left">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn" id="login-btn" style="margin-top:8px">Masuk</button>
+    </form>
+    <p style="margin-top:14px;font-size:.78rem">Bisa juga <a href="/api/auth/google" style="color:var(--primary);font-weight:700">masuk dengan Google</a> (kalau email-mu terdaftar sebagai admin).</p>
+    <p style="margin-top:10px;font-size:.8rem"><a href="/" style="color:var(--primary);font-weight:700">← Kembali ke website</a></p>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD VIEW ============ -->
+<div id="dashboard-view" class="admin-shell" style="display:none">
+  <aside class="admin-sidebar">
+    <div class="brand"><img src="/assets/logo_hima.png" style="height:34px;border-radius:8px"><div class="brand-text" style="font-size:.9rem">HIMATEKKOM</div></div>
+    <button class="tab active" data-tab="informasi">📰 Informasi <span class="badge-count" id="count-informasi">0</span></button>
+    <button class="tab" data-tab="proker">🎯 Program Kerja <span class="badge-count" id="count-proker">0</span></button>
+    <button class="tab" data-tab="pengurus">👥 Struktur Pengurus <span class="badge-count" id="count-pengurus">0</span></button>
+    <button class="tab" data-tab="pertanyaan">💬 Pertanyaan <span class="badge-count" id="count-pertanyaan">0</span></button>
+    <a href="/profil.html">👤 Profil Saya</a>
+    <a href="/" target="_blank">🌐 Lihat Website</a>
+    <button class="tab" id="logout-btn" style="margin-top:auto;color:#e5484d">↩ Keluar</button>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h2 id="panel-title" style="margin-bottom:2px">Informasi</h2>
+        <p style="margin:0" id="panel-desc">Kelola berita dan pengumuman yang tampil di website.</p>
+      </div>
+      <button class="btn" id="add-btn">+ Tambah Data</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="table-head"></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ============ MODAL FORM ============ -->
+<div class="modal-overlay" id="form-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title" style="margin:0">Tambah Data</h3>
+      <button class="btn secondary small" id="modal-close-btn">×</button>
+    </div>
+    <div id="modal-alert"></div>
+    <form id="data-form">
+      <div id="modal-fields" class="form-grid"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="cancel-btn">Batal</button>
+        <button type="submit" class="btn" id="save-btn">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/admin/admin.js"></script>
+</body>
+</html>

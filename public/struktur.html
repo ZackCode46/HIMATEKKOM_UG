@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Struktur Organisasi — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="struktur">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Kepengurusan</span>
+      <h2>Struktur Organisasi</h2>
+      <p>Kenali para pengurus yang menjalankan roda organisasi HIMATEKKOM.</p>
+    </div>
+
+    <div id="filter-bar" class="filter-bar reveal"></div>
+    <div id="pengurus-grid" class="grid reveal">
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+let ALL_PENGURUS = [];
+const DIVISI_LIST = ['BPH', 'Humas', 'Media Kreatif', 'PSDM', 'Organisasi'];
+
+function renderPengurus(list) {
+  const grid = document.getElementById('pengurus-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state">Belum ada data pengurus untuk divisi ini.</div>';
+    return;
+  }
+  const sorted = [...list].sort((a,b) => (a.urutan||0) - (b.urutan||0));
+  grid.innerHTML = sorted.map(p => `
+    <div class="card person-card">
+      ${p.foto ? `<img class="photo" src="${p.foto.startsWith('assets/') ? '/'+p.foto : p.foto}" alt="${HIMA.escapeHtml(p.nama)}">`
+                : `<div class="photo" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;font-weight:800;font-size:1.6rem">${HIMA.escapeHtml((p.nama||'?').charAt(0))}</div>`}
+      <h3>${HIMA.escapeHtml(p.nama)}</h3>
+      <div class="role">${HIMA.escapeHtml(p.jabatan)}</div>
+    </div>`).join('');
+}
+
+function renderFilters(activeDivisi) {
+  const bar = document.getElementById('filter-bar');
+  const chips = ['semua', ...DIVISI_LIST];
+  bar.innerHTML = chips.map(d => `<button class="filter-chip ${d.toLowerCase()===String(activeDivisi).toLowerCase()?'active':''}" data-divisi="${d}">${d}</button>`).join('');
+  bar.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      bar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const d = chip.dataset.divisi;
+      const url = new URL(location.href);
+      if (d === 'semua') url.searchParams.delete('divisi'); else url.searchParams.set('divisi', d);
+      history.replaceState(null, '', url);
+      renderPengurus(d === 'semua' ? ALL_PENGURUS : ALL_PENGURUS.filter(p => (p.divisi||'').toLowerCase() === d.toLowerCase()));
+    });
+  });
+}
+
+async function loadPengurus() {
+  try {
+    const res = await fetch('/api/pengurus');
+    ALL_PENGURUS = await res.json();
+    const params = new URLSearchParams(location.search);
+    const divisi = params.get('divisi') || 'semua';
+    renderFilters(divisi);
+    renderPengurus(divisi === 'semua' ? ALL_PENGURUS : ALL_PENGURUS.filter(p => (p.divisi||'').toLowerCase() === divisi.toLowerCase()));
+  } catch (err) {
+    document.getElementById('pengurus-grid').innerHTML = '<div class="empty-state">Gagal memuat data.</div>';
+  }
+}
+document.addEventListener('layout:ready', loadPengurus);
+</script>
+</body>
+</html>

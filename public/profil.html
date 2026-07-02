@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profil Saya — HIMATEKKOM Gunadarma</title>
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="profil">
+
+<div id="site-header"></div>
+
+<section class="section" style="padding-top:56px">
+  <div class="container" id="profil-wrap" style="display:none">
+
+    <div class="form-card reveal" style="max-width:520px;text-align:center;margin-bottom:24px">
+      <img id="p-avatar" src="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:4px solid var(--border)">
+      <h2 id="p-name" style="margin-bottom:2px"></h2>
+      <p id="p-email" style="margin-bottom:4px"></p>
+      <span class="role-pill" id="p-role"></span>
+      <p style="font-size:.78rem;margin-top:10px" id="p-joined"></p>
+      <div id="p-admin-link" style="display:none;margin-top:10px"><a href="/admin/" class="btn small">🛠 Buka Panel Admin</a></div>
+    </div>
+
+    <div class="grid reveal" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));max-width:900px;margin:0 auto">
+      <div class="form-card">
+        <h3>Edit Nama</h3>
+        <div id="name-alert"></div>
+        <form id="name-form" style="display:flex;flex-direction:column;gap:12px">
+          <div class="field"><label for="edit-name">Nama Lengkap</label><input type="text" id="edit-name" required></div>
+          <button class="btn" type="submit">Simpan Perubahan</button>
+        </form>
+      </div>
+
+      <div class="form-card" id="password-card">
+        <h3>Ganti Password</h3>
+        <div id="pw-alert"></div>
+        <form id="pw-form" style="display:flex;flex-direction:column;gap:12px">
+          <div class="field"><label for="old-pw">Password Lama</label><input type="password" id="old-pw" required></div>
+          <div class="field"><label for="new-pw">Password Baru</label><input type="password" id="new-pw" required minlength="6"></div>
+          <button class="btn" type="submit">Ganti Password</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="section-head reveal" style="margin-top:56px">
+      <span class="eyebrow">Riwayat</span>
+      <h2>Pertanyaan Saya</h2>
+      <p>Daftar pertanyaan yang pernah kamu ajukan ke admin HIMATEKKOM.</p>
+    </div>
+    <div id="my-questions" class="grid reveal"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadProfile() {
+  const res = await fetch('/api/auth/me');
+  const { user } = await res.json();
+  if (!user) { location.href = '/login.html'; return; }
+
+  document.getElementById('profil-wrap').style.display = '';
+  document.getElementById('p-avatar').src = user.avatar;
+  document.getElementById('p-name').textContent = user.name;
+  document.getElementById('p-email').textContent = user.email;
+  document.getElementById('p-role').textContent = user.role === 'admin' ? 'Admin' : 'Anggota';
+  document.getElementById('p-joined').textContent = 'Bergabung sejak ' + HIMA.formatDate(user.createdAt);
+  document.getElementById('edit-name').value = user.name;
+  if (user.role === 'admin') document.getElementById('p-admin-link').style.display = '';
+  if (user.provider === 'google') document.getElementById('password-card').style.display = 'none';
+
+  // pertanyaan saya
+  try {
+    const qRes = await fetch('/api/pertanyaan?mine=1');
+    const questions = await qRes.json();
+    const box = document.getElementById('my-questions');
+    if (!questions.length) {
+      box.innerHTML = '<div class="empty-state">Kamu belum pernah mengajukan pertanyaan. <a href="/tanya.html" style="color:var(--primary);font-weight:700">Tanya sekarang</a></div>';
+    } else {
+      box.innerHTML = questions.map(q => `
+        <div class="card"><div class="body">
+          <span class="tag" style="background:${q.status === 'dijawab' ? 'color-mix(in srgb, #16a34a 15%, transparent)' : 'color-mix(in srgb, #f59e0b 15%, transparent)'};color:${q.status === 'dijawab' ? '#16a34a' : '#b45309'}">${q.status === 'dijawab' ? 'Dijawab' : 'Menunggu'}</span>
+          <h4>${HIMA.escapeHtml(q.pertanyaan)}</h4>
+          ${q.jawaban ? `<p><strong>Jawaban:</strong> ${HIMA.escapeHtml(q.jawaban)}</p>` : '<p style="font-style:italic">Belum dijawab admin.</p>'}
+          <div class="meta">${HIMA.formatDate(q.createdAt)}</div>
+        </div></div>`).join('');
+    }
+  } catch {}
+}
+
+document.getElementById('name-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const alertBox = document.getElementById('name-alert');
+  alertBox.innerHTML = '';
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: document.getElementById('edit-name').value })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal menyimpan');
+    alertBox.innerHTML = '<div class="alert success">Nama berhasil diperbarui.</div>';
+    loadProfile();
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert error">${err.message}</div>`;
+  }
+});
+
+document.getElementById('pw-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const alertBox = document.getElementById('pw-alert');
+  alertBox.innerHTML = '';
+  try {
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ oldPassword: document.getElementById('old-pw').value, newPassword: document.getElementById('new-pw').value })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal mengganti password');
+    alertBox.innerHTML = '<div class="alert success">Password berhasil diganti.</div>';
+    e.target.reset();
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert error">${err.message}</div>`;
+  }
+});
+
+document.addEventListener('layout:ready', loadProfile);
+</script>
+</body>
+</html>

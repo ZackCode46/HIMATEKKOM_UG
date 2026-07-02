@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HIMATEKKOM Gunadarma — Himpunan Mahasiswa Teknik Komputer</title>
+<meta name="description" content="Website resmi Himpunan Mahasiswa Teknik Komputer Universitas Gunadarma.">
+<link rel="icon" href="/assets/logo_hima.png">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-page="index">
+
+<div id="site-header"></div>
+
+<section class="hero" style="background-image:url('/assets/foto_kabinet.jpg')">
+  <div class="hero-content container">
+    <span class="eyebrow">Universitas Gunadarma</span>
+    <h1>HIMATEKKOM GUNADARMA</h1>
+    <h3>Himpunan Mahasiswa Teknik Komputer</h3>
+    <p>Bersama membangun inovasi, teknologi, dan kolaborasi mahasiswa Teknik Komputer Universitas Gunadarma.</p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap">
+      <a href="/pendaftaran.html" class="btn">Daftar Sekarang</a>
+      <a href="#proker" class="btn secondary" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.3)">Lihat Proker</a>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="container content-wrap reveal">
+    <span class="eyebrow">Tentang Kami</span>
+    <h2>Tentang Himpunan</h2>
+    <p>Himpunan Mahasiswa Teknik Komputer Universitas Gunadarma merupakan wadah bagi mahasiswa untuk mengembangkan potensi akademik, sosial, dan profesional di bidang teknologi. Kami berkomitmen menghadirkan kegiatan yang inovatif, kolaboratif, dan berdampak positif.</p>
+    <div class="stats-row">
+      <div class="stat"><div class="num">8+</div><div class="label">Tahun Berdiri</div></div>
+      <div class="stat"><div class="num">5</div><div class="label">Divisi Aktif</div></div>
+      <div class="stat"><div class="num">100+</div><div class="label">Anggota</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="proker" class="section" style="background:var(--surface)">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Kegiatan</span>
+      <h2>Program Kerja Unggulan</h2>
+      <p>Beberapa program kerja unggulan yang menjadi ciri khas HIMATEKKOM.</p>
+    </div>
+    <div id="proker-grid" class="grid reveal">
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+      <div class="skeleton" style="height:220px"></div>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="/proker.html" class="btn secondary">Lihat Semua Proker</a>
+    </div>
+  </div>
+</section>
+
+<section id="info" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Terbaru</span>
+      <h2>Pengumuman Terbaru</h2>
+    </div>
+    <div id="info-grid" class="grid reveal">
+      <div class="skeleton" style="height:180px"></div>
+      <div class="skeleton" style="height:180px"></div>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="/informasi.html" class="btn secondary">Lihat Semua Informasi</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="cta-section reveal">
+    <h2>Ingin Jadi Bagian dari HIMATEKKOM?</h2>
+    <p>Ayo bergabung dan berkontribusi dalam dunia teknologi bersama kami.</p>
+    <div style="margin-top:20px"><a href="/pendaftaran.html" class="btn">Daftar Sekarang</a></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="/js/layout.js"></script>
+<script src="/js/main.js"></script>
+<script>
+async function loadHome() {
+  try {
+    const [proker, info] = await Promise.all([
+      fetch('/api/proker').then(r => r.json()),
+      fetch('/api/informasi').then(r => r.json())
+    ]);
+
+    const prokerGrid = document.getElementById('proker-grid');
+    if (proker.length) {
+      prokerGrid.innerHTML = proker.slice(0, 4).map(p => `
+        <article class="card">
+          ${HIMA.thumbOrPlaceholder(p.gambar, p.judul)}
+          <div class="body">
+            <span class="tag">${HIMA.escapeHtml(p.tag || 'Proker')}</span>
+            <h4>${HIMA.escapeHtml(p.judul)}</h4>
+            <p>${HIMA.escapeHtml(p.deskripsi)}</p>
+          </div>
+        </article>`).join('');
+    } else {
+      prokerGrid.innerHTML = '<div class="empty-state">Belum ada program kerja.</div>';
+    }
+
+    const infoGrid = document.getElementById('info-grid');
+    const sorted = info.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+    if (sorted.length) {
+      infoGrid.innerHTML = sorted.slice(0, 2).map(i => `
+        <article class="card">
+          <div class="body">
+            <span class="tag">${HIMA.escapeHtml(i.kategori || 'Info')}</span>
+            <h4>${HIMA.escapeHtml(i.judul)}</h4>
+            <p>${HIMA.escapeHtml(i.ringkasan)}</p>
+            <div class="meta">${HIMA.formatDate(i.tanggal)}</div>
+          </div>
+        </article>`).join('');
+    } else {
+      infoGrid.innerHTML = '<div class="empty-state">Belum ada pengumuman.</div>';
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+document.addEventListener('layout:ready', loadHome);
+</script>
+</body>
+</html>

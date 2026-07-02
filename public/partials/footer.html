@@ -1,0 +1,35 @@
+<footer>
+  <div class="container wrap">
+    <div style="display:flex;gap:12px;align-items:center">
+      <img src="/assets/logo_hima.png" alt="logo" style="height:38px;border-radius:8px">
+      <div>
+        <div style="font-weight:800;">HIMATEKKOM Gunadarma</div>
+        <div style="font-size:.8rem;color:var(--muted)">Himpunan Mahasiswa Teknik Komputer</div>
+      </div>
+    </div>
+    <div class="foot-links">
+      <a href="/tentang.html">Tentang</a>
+      <a href="/proker.html">Proker</a>
+      <a href="/informasi.html">Informasi</a>
+      <a href="/struktur.html">Struktur</a>
+      <a href="https://wa.me/6283156960998" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://instagram.com/himatekkom.ug" target="_blank" rel="noopener">Instagram</a>
+    </div>
+    <div style="font-size:.82rem;color:var(--muted)">© <span id="year"></span> HIMATEKKOM — Universitas Gunadarma</div>
+  </div>
+</footer>
+
+<button id="chatbot-btn" class="chatbot-btn" aria-label="Buka chat">🤖</button>
+<div id="chat-panel" class="chat-panel" aria-hidden="true">
+  <div class="header">
+    <div>Chatbot HIMATEKKOM</div>
+    <button id="chat-close" class="btn secondary small" style="color:#fff;border-color:rgba(255,255,255,.4)">×</button>
+  </div>
+  <div class="body" id="chat-body" role="log" aria-live="polite">
+    <div class="msg bot">Halo! Ada yang bisa dibantu terkait HIMATEKKOM? Coba ketik: info, proker, daftar, tentang, struktur, atau kontak.</div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Ketik pesan..." autocomplete="off">
+    <button id="chat-send">Kirim</button>
+  </div>
+</div>

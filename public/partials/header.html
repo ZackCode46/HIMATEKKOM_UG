@@ -1,0 +1,67 @@
+<header class="header-wrap">
+  <div class="navbar">
+    <div class="container">
+      <a href="/" class="brand">
+        <img src="/assets/logo_hima.png" alt="Logo HIMATEKKOM">
+        <div class="brand-text">HIMATEKKOM GUNADARMA</div>
+      </a>
+
+      <nav class="nav-links" aria-label="Navigasi utama">
+        <a href="/" data-nav="index">Beranda</a>
+        <a href="/proker.html" data-nav="proker">Proker</a>
+        <a href="/informasi.html" data-nav="informasi">Informasi</a>
+        <a href="/tanya.html" data-nav="tanya">Tanya Jawab</a>
+        <a href="/pendaftaran.html" data-nav="pendaftaran">Pendaftaran</a>
+        <a href="/tentang.html" data-nav="tentang">Tentang</a>
+        <div class="nav-dropdown">
+          <a href="/struktur.html" class="nav-link" data-nav="struktur">Struktur ▾</a>
+          <div class="dropdown-menu">
+            <a href="/struktur.html?divisi=BPH">Badan Pengurus Harian</a>
+            <a href="/struktur.html?divisi=Humas">Hubungan Masyarakat</a>
+            <a href="/struktur.html?divisi=Media%20Kreatif">Media Kreatif</a>
+            <a href="/struktur.html?divisi=PSDM">Pengembangan Sumber Daya Manusia</a>
+            <a href="/struktur.html?divisi=Organisasi">Organisasi</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="controls">
+        <div class="nav-dropdown" id="notif-wrap">
+          <button class="notif-btn" id="notif-btn" aria-label="Notifikasi" title="Notifikasi">
+            🔔<span class="notif-dot" id="notif-dot" hidden></span>
+          </button>
+          <div class="dropdown-menu notif-menu" id="notif-menu">
+            <div class="notif-head">
+              <span>Info Terbaru</span>
+              <button id="notif-mark-read" class="notif-mark">Tandai dibaca</button>
+            </div>
+            <div id="notif-list" class="notif-list"><div class="empty-state" style="padding:20px">Memuat...</div></div>
+          </div>
+        </div>
+
+        <div id="auth-area"></div>
+
+        <div id="theme-toggle" class="theme-toggle" role="button" aria-pressed="false" title="Ganti tema"><div class="dot"></div></div>
+        <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobile-panel" class="mobile-panel" aria-hidden="true">
+    <nav class="nav">
+      <a href="/">Beranda</a>
+      <a href="/proker.html">Proker</a>
+      <a href="/informasi.html">Informasi</a>
+      <a href="/tanya.html">Tanya Jawab</a>
+      <a href="/pendaftaran.html">Pendaftaran</a>
+      <a href="/tentang.html">Tentang</a>
+      <a href="/struktur.html">Struktur</a>
+      <a href="/profil.html" id="mobile-profile-link" style="display:none">Profil Saya</a>
+      <a href="/login.html" id="mobile-login-link">Masuk / Daftar</a>
+    </nav>
+  </div>
+</header>
