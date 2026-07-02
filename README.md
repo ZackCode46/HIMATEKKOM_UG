@@ -85,6 +85,64 @@ Untuk mengaktifkannya:
 
 Kalau mau akun Google tertentu otomatis jadi admin, set `ADMIN_EMAIL` di `.env` sama dengan email Google tersebut sebelum orang itu login pertama kali.
 
+## ☁️ Deploy ke Vercel (lewat GitHub)
+
+Project ini sudah disiapkan supaya bisa jalan di Vercel: otomatis pakai **Neon Postgres** untuk database dan **Vercel Blob** untuk gambar begitu kamu hubungkan storage-nya — kamu **tidak perlu ubah kode apa pun**.
+
+### 1. Push ke GitHub
+
+```bash
+cd himatekkom-web
+git init
+git add .
+git commit -m "Initial commit: HIMATEKKOM website v2"
+git branch -M main
+git remote add origin https://github.com/USERNAME/NAMA-REPO.git
+git push -u origin main
+```
+
+> `data/db.json`, `.env`, `node_modules/`, dan `uploads/*` sudah otomatis di-*ignore* lewat `.gitignore`, jadi aman untuk di-push.
+
+### 2. Import ke Vercel
+
+1. Buka [vercel.com/new](https://vercel.com/new), pilih **Import Project**, lalu pilih repo GitHub yang barusan kamu push
+2. Framework Preset biarkan **Other** (Vercel otomatis mendeteksi folder `api/`)
+3. Klik **Deploy** dulu — nanti kita lengkapi environment variable & storage-nya
+
+### 3. Tambahkan Database (Neon Postgres)
+
+1. Di dashboard project Vercel, buka tab **Storage**
+2. Klik **Create Database** → pilih **Neon** (Postgres) → ikuti langkah setup (gratis untuk skala kecil)
+3. Setelah terhubung, Vercel otomatis menambahkan environment variable `DATABASE_URL` ke project — tidak perlu diisi manual
+
+### 4. Tambahkan Storage Gambar (Vercel Blob)
+
+1. Masih di tab **Storage**, klik **Create Database** lagi → pilih **Blob**
+2. Setelah terhubung, Vercel otomatis menambahkan `BLOB_READ_WRITE_TOKEN` — tidak perlu diisi manual
+
+### 5. Lengkapi Environment Variable Lainnya
+
+Di tab **Settings → Environment Variables**, tambahkan (minimal):
+
+| Key | Value |
+|---|---|
+| `SESSION_SECRET` | string acak yang panjang (misal hasil dari `openssl rand -hex 32`) |
+| `ADMIN_EMAIL` | email yang mau dipakai login admin pertama kali |
+| `ADMIN_PASSWORD` | password admin pertama kali |
+| `BASE_URL` | URL project Vercel kamu, misal `https://himatekkom.vercel.app` |
+
+Kalau mau aktifkan Login dengan Google juga, tambahkan `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, dan `GOOGLE_CALLBACK_URL` (isi dengan `https://domain-vercel-kamu/api/auth/google/callback`) — jangan lupa daftarkan redirect URI itu juga di Google Cloud Console.
+
+### 6. Redeploy
+
+Setelah semua environment variable terisi, buka tab **Deployments** → titik tiga di deployment terakhir → **Redeploy**. Setelah selesai, database & akun admin otomatis ter-*seed* saat request pertama masuk.
+
+### Menjalankan Lokal Setelah Migrasi Ini
+
+Kamu tetap bisa jalanin di laptop **tanpa** setup Neon/Blob sama sekali — asal `DATABASE_URL` dan `BLOB_READ_WRITE_TOKEN` dikosongkan di `.env`, aplikasi otomatis balik pakai file lokal (`data/db.json`) dan folder `uploads/` seperti biasa. Cocok untuk development sehari-hari.
+
+Kalau mau testing pakai database Neon yang sama persis dengan production dari laptop, tinggal isi `DATABASE_URL` di `.env` lokal dengan connection string dari Neon Console (tab Storage → Neon → **.env.local** → copy).
+
 ## 📁 Struktur Folder
 
 ```
@@ -108,22 +166,24 @@ himatekkom-web/
 
 ## 🗄️ Tentang Database
 
-Project ini memakai **database file JSON sederhana** (`data/db.json`), bukan PostgreSQL/MySQL — sengaja dibuat ringan supaya:
-- Tidak perlu setup database server terpisah
-- Bisa langsung jalan di hosting murah/gratis (Railway, Render, VPS kecil, dsb)
-- Cukup untuk skala traffic website organisasi kampus
+Project ini pakai **dual-mode database**, otomatis milih sesuai environment:
 
-Kalau ke depan butuh skala lebih besar (ribuan data/traffic tinggi), tinggal ganti isi `lib/db.js` ke database sungguhan tanpa perlu ubah banyak di `server.js`.
+- **Lokal / development** (tidak ada `DATABASE_URL`) → file JSON sederhana di `data/db.json`. Tidak perlu setup database server sama sekali.
+- **Vercel / production** (ada `DATABASE_URL`, otomatis ke-set kalau kamu connect Neon Postgres lewat tab Storage) → data tersimpan permanen di Postgres, karena Vercel tidak punya filesystem yang persisten.
 
-## ☁️ Deploy ke Hosting
+Sama halnya untuk gambar: lokal disimpan di folder `uploads/`, di Vercel otomatis pakai **Vercel Blob** (kalau `BLOB_READ_WRITE_TOKEN` ter-set).
 
-Bisa deploy ke platform apa pun yang mendukung Node.js, misalnya **Railway**, **Render**, atau VPS:
+Logikanya ada di `lib/db.js` dan `lib/upload.js` — tidak perlu kamu ubah manual, semua otomatis terdeteksi dari environment variable yang ada.
 
-1. Push project ini ke repo GitHub (pastikan `.env` dan `data/db.json` tidak ikut ter-*commit* — sudah diatur di `.gitignore`)
-2. Di platform hosting, set environment variables sesuai `.env.example`
+## ☁️ Deploy ke Hosting Lain (selain Vercel)
+
+Kalau suatu saat mau pindah dari Vercel ke platform yang mendukung Node.js server biasa (**Railway**, **Render**, VPS, dsb) yang punya filesystem persisten, project ini tetap bisa jalan **tanpa Postgres/Blob sama sekali** — cukup jangan set `DATABASE_URL`/`BLOB_READ_WRITE_TOKEN`, otomatis balik pakai file lokal:
+
+1. Push project ke GitHub (langkah sama seperti di atas)
+2. Di platform hosting, set environment variables sesuai `.env.example` (skip `DATABASE_URL` & `BLOB_READ_WRITE_TOKEN`)
 3. Build command: `npm install`
 4. Start command: `npm start`
-5. Pastikan folder `uploads/` bersifat *persistent* (tidak hilang tiap deploy) — kalau platform memakai *ephemeral filesystem*, pertimbangkan pindah upload ke layanan seperti Cloudinary/S3 nanti.
+5. Pastikan folder `uploads/` & `data/` bersifat *persistent volume* di platform tersebut (bukan ephemeral)
 
 ## 📝 Catatan Lain
 
@@ -133,3 +193,4 @@ Bisa deploy ke platform apa pun yang mendukung Node.js, misalnya **Railway**, **
 - **Notifikasi** info terbaru memakai `localStorage` (per-browser, bukan per-akun) supaya bisa dipakai visitor yang belum login sekalipun. Kalau nanti mau notifikasi tersimpan per-akun lintas perangkat, tinggal tambahkan field `lastSeenNotifAt` di data user dan endpoint baru untuk update/baca nilai itu.
 - **Tanya Jawab**: pertanyaan yang dikirim visitor (belum login) butuh nama+email manual; kalau sudah login, otomatis pakai data akun. Hanya pertanyaan berstatus "dijawab" yang tampil publik sebagai FAQ.
 - Semua field `passwordHash` di-hash dengan bcrypt, session pakai cookie yang di-sign dengan `SESSION_SECRET` — pastikan ganti secret ini sebelum deploy production.
+- Paket `@vercel/postgres` sengaja **tidak dipakai** karena sudah di-deprecate Vercel per akhir 2025/awal 2026 — project ini pakai `@neondatabase/serverless` yang jadi rekomendasi resmi pengganti.

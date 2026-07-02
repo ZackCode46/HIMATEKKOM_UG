@@ -7,15 +7,17 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 
-const { readDB, writeDB, nextId } = require('./lib/db');
+const { readDB, writeDB, nextId, USE_POSTGRES } = require('./lib/db');
+const { saveImage, uploadDir, USE_BLOB } = require('./lib/upload');
 const { seed } = require('./lib/seed');
-
-// Pastikan database sudah ada (auto-seed sekali di awal)
-seed();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+// Pastikan database sudah ada (auto-seed sekali). Jangan biarkan proses berhenti
+// kalau seeding gagal saat cold-start serverless -- cukup log errornya.
+seed().catch((err) => console.error('Seed gagal:', err));
 
 app.use(express.json());
 app.use(
@@ -26,20 +28,13 @@ app.use(
   })
 );
 
-// ---------- Upload gambar ----------
-const uploadDir = path.join(__dirname, 'uploads');
-fs.mkdirSync(uploadDir, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const safeExt = ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext) ? ext : '.jpg';
-    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
-  }
-});
+// ---------- Upload gambar (multer simpan di memori, lalu diteruskan ke lib/upload.js) ----------
+if (!USE_BLOB) {
+  // mode lokal: pastikan folder uploads ada supaya bisa ditulis & dibaca
+  try { fs.mkdirSync(uploadDir, { recursive: true }); } catch {}
+}
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     if (/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)) cb(null, true);
@@ -58,6 +53,8 @@ function avatarFor(name) {
 function findUserById(db, id) {
   return db.users.find((u) => u.id === id);
 }
+// pembungkus supaya error di handler async otomatis diteruskan ke Express (tanpa perlu try/catch di tiap route)
+const ah = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 // ---------- Middleware auth ----------
 function requireUser(req, res, next) {
@@ -65,18 +62,17 @@ function requireUser(req, res, next) {
   return res.status(401).json({ error: 'Silakan login terlebih dahulu' });
 }
 function requireAuth(req, res, next) {
-  // requireAuth = harus login SEBAGAI ADMIN (dipakai endpoint lama & CRUD konten)
   if (req.session && req.session.userId && req.session.role === 'admin') return next();
   return res.status(401).json({ error: 'Khusus admin' });
 }
 
 // ================= AUTH: EMAIL/PASSWORD =================
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', ah(async (req, res) => {
   const { name, email, password } = req.body || {};
   if (!name || !email || !password) return res.status(400).json({ error: 'Nama, email, dan password wajib diisi' });
   if (password.length < 6) return res.status(400).json({ error: 'Password minimal 6 karakter' });
 
-  const db = readDB();
+  const db = await readDB();
   const emailLower = String(email).toLowerCase().trim();
   if (db.users.some((u) => u.email.toLowerCase() === emailLower)) {
     return res.status(409).json({ error: 'Email sudah terdaftar. Silakan login.' });
@@ -94,71 +90,61 @@ app.post('/api/auth/register', (req, res) => {
     createdAt: new Date().toISOString()
   };
   db.users.push(user);
-  writeDB(db);
+  await writeDB(db);
 
   req.session.userId = user.id;
   req.session.role = user.role;
   res.status(201).json({ ok: true, user: publicUser(user) });
-});
+}));
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', ah(async (req, res) => {
   const { email, password } = req.body || {};
-  const db = readDB();
+  const db = await readDB();
   const user = db.users.find((u) => u.email.toLowerCase() === String(email || '').toLowerCase());
-  if (!user || !user.passwordHash) {
-    return res.status(401).json({ error: 'Email atau password salah' });
-  }
-  if (!bcrypt.compareSync(password || '', user.passwordHash)) {
-    return res.status(401).json({ error: 'Email atau password salah' });
-  }
+  if (!user || !user.passwordHash) return res.status(401).json({ error: 'Email atau password salah' });
+  if (!bcrypt.compareSync(password || '', user.passwordHash)) return res.status(401).json({ error: 'Email atau password salah' });
+
   req.session.userId = user.id;
   req.session.role = user.role;
   res.json({ ok: true, user: publicUser(user) });
-});
+}));
 
 app.post('/api/auth/logout', (req, res) => {
   req.session = null;
   res.json({ ok: true });
 });
 
-app.get('/api/auth/me', (req, res) => {
+app.get('/api/auth/me', ah(async (req, res) => {
   if (!req.session || !req.session.userId) return res.json({ user: null });
-  const db = readDB();
+  const db = await readDB();
   const user = findUserById(db, req.session.userId);
-  if (!user) return res.json({ user: null });
-  res.json({ user: publicUser(user) });
-});
+  res.json({ user: user ? publicUser(user) : null });
+}));
 
-app.put('/api/auth/me', requireUser, (req, res) => {
+app.put('/api/auth/me', requireUser, ah(async (req, res) => {
   const { name } = req.body || {};
   if (!name || !name.trim()) return res.status(400).json({ error: 'Nama tidak boleh kosong' });
-  const db = readDB();
+  const db = await readDB();
   const user = findUserById(db, req.session.userId);
   if (!user) return res.status(404).json({ error: 'Pengguna tidak ditemukan' });
   user.name = name.trim();
   if (user.provider === 'local') user.avatar = avatarFor(user.name);
-  writeDB(db);
+  await writeDB(db);
   res.json({ ok: true, user: publicUser(user) });
-});
+}));
 
-app.post('/api/auth/change-password', requireUser, (req, res) => {
+app.post('/api/auth/change-password', requireUser, ah(async (req, res) => {
   const { oldPassword, newPassword } = req.body || {};
-  const db = readDB();
+  const db = await readDB();
   const user = findUserById(db, req.session.userId);
   if (!user) return res.status(404).json({ error: 'Pengguna tidak ditemukan' });
-  if (!user.passwordHash) {
-    return res.status(400).json({ error: 'Akun ini masuk lewat Google dan tidak memiliki password.' });
-  }
-  if (!bcrypt.compareSync(oldPassword || '', user.passwordHash)) {
-    return res.status(400).json({ error: 'Password lama salah' });
-  }
-  if (!newPassword || newPassword.length < 6) {
-    return res.status(400).json({ error: 'Password baru minimal 6 karakter' });
-  }
+  if (!user.passwordHash) return res.status(400).json({ error: 'Akun ini masuk lewat Google dan tidak memiliki password.' });
+  if (!bcrypt.compareSync(oldPassword || '', user.passwordHash)) return res.status(400).json({ error: 'Password lama salah' });
+  if (!newPassword || newPassword.length < 6) return res.status(400).json({ error: 'Password baru minimal 6 karakter' });
   user.passwordHash = bcrypt.hashSync(newPassword, 10);
-  writeDB(db);
+  await writeDB(db);
   res.json({ ok: true });
-});
+}));
 
 // ================= AUTH: GOOGLE OAUTH =================
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
@@ -166,12 +152,9 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || `${BASE_URL}/api/auth/google/callback`;
 
 app.get('/api/auth/google', (req, res) => {
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-    return res.redirect('/login.html?error=google_not_configured');
-  }
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) return res.redirect('/login.html?error=google_not_configured');
   const state = crypto.randomBytes(16).toString('hex');
   req.session.oauthState = state;
-
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: GOOGLE_CALLBACK_URL,
@@ -183,23 +166,18 @@ app.get('/api/auth/google', (req, res) => {
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
 });
 
-app.get('/api/auth/google/callback', async (req, res) => {
+app.get('/api/auth/google/callback', ah(async (req, res) => {
   try {
     const { code, state } = req.query;
-    if (!code || !state || state !== req.session.oauthState) {
-      return res.redirect('/login.html?error=google_state_invalid');
-    }
+    if (!code || !state || state !== req.session.oauthState) return res.redirect('/login.html?error=google_state_invalid');
     req.session.oauthState = null;
 
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        code,
-        client_id: GOOGLE_CLIENT_ID,
-        client_secret: GOOGLE_CLIENT_SECRET,
-        redirect_uri: GOOGLE_CALLBACK_URL,
-        grant_type: 'authorization_code'
+        code, client_id: GOOGLE_CLIENT_ID, client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: GOOGLE_CALLBACK_URL, grant_type: 'authorization_code'
       })
     });
     const tokenData = await tokenRes.json();
@@ -211,10 +189,10 @@ app.get('/api/auth/google/callback', async (req, res) => {
     const profile = await profileRes.json();
     if (!profile.email) throw new Error('Gagal mengambil profil Google');
 
-    const db = readDB();
+    const db = await readDB();
     let user = db.users.find((u) => u.googleId === profile.sub || u.email.toLowerCase() === profile.email.toLowerCase());
-
     const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '').toLowerCase();
+
     if (user) {
       user.googleId = profile.sub;
       user.avatar = profile.picture || user.avatar;
@@ -234,7 +212,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
       };
       db.users.push(user);
     }
-    writeDB(db);
+    await writeDB(db);
 
     req.session.userId = user.id;
     req.session.role = user.role;
@@ -243,20 +221,21 @@ app.get('/api/auth/google/callback', async (req, res) => {
     console.error('Google OAuth error:', err.message);
     res.redirect('/login.html?error=google_failed');
   }
-});
+}));
 
 // ================= UPLOAD =================
-app.post('/api/upload', requireAuth, upload.single('image'), (req, res) => {
+app.post('/api/upload', requireAuth, upload.single('image'), ah(async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Tidak ada file yang diunggah' });
-  res.json({ url: `/uploads/${req.file.filename}` });
-});
+  const url = await saveImage(req.file.buffer, req.file.originalname);
+  res.json({ url });
+}));
 
 // ================= GENERIC CRUD FACTORY (konten: informasi/proker/pengurus) =================
 function crud(collection, allowedFields) {
   const router = express.Router();
 
-  router.get('/', (req, res) => {
-    const db = readDB();
+  router.get('/', ah(async (req, res) => {
+    const db = await readDB();
     let items = db[collection];
     for (const [key, value] of Object.entries(req.query)) {
       if (allowedFields.includes(key)) {
@@ -264,46 +243,46 @@ function crud(collection, allowedFields) {
       }
     }
     res.json(items);
-  });
+  }));
 
-  router.get('/:id', (req, res) => {
-    const db = readDB();
+  router.get('/:id', ah(async (req, res) => {
+    const db = await readDB();
     const item = db[collection].find((it) => it.id === Number(req.params.id));
     if (!item) return res.status(404).json({ error: 'Data tidak ditemukan' });
     res.json(item);
-  });
+  }));
 
-  router.post('/', requireAuth, (req, res) => {
-    const db = readDB();
+  router.post('/', requireAuth, ah(async (req, res) => {
+    const db = await readDB();
     const body = req.body || {};
     const item = { id: nextId(db, collection) };
     for (const field of allowedFields) item[field] = body[field] ?? '';
     if (collection === 'informasi') item.tanggal = new Date().toISOString();
     db[collection].push(item);
-    writeDB(db);
+    await writeDB(db);
     res.status(201).json(item);
-  });
+  }));
 
-  router.put('/:id', requireAuth, (req, res) => {
-    const db = readDB();
+  router.put('/:id', requireAuth, ah(async (req, res) => {
+    const db = await readDB();
     const idx = db[collection].findIndex((it) => it.id === Number(req.params.id));
     if (idx === -1) return res.status(404).json({ error: 'Data tidak ditemukan' });
     const body = req.body || {};
     for (const field of allowedFields) {
       if (field in body) db[collection][idx][field] = body[field];
     }
-    writeDB(db);
+    await writeDB(db);
     res.json(db[collection][idx]);
-  });
+  }));
 
-  router.delete('/:id', requireAuth, (req, res) => {
-    const db = readDB();
+  router.delete('/:id', requireAuth, ah(async (req, res) => {
+    const db = await readDB();
     const idx = db[collection].findIndex((it) => it.id === Number(req.params.id));
     if (idx === -1) return res.status(404).json({ error: 'Data tidak ditemukan' });
     const removed = db[collection].splice(idx, 1);
-    writeDB(db);
+    await writeDB(db);
     res.json({ ok: true, removed: removed[0] });
-  });
+  }));
 
   return router;
 }
@@ -313,8 +292,8 @@ app.use('/api/proker', crud('proker', ['judul', 'deskripsi', 'tag', 'gambar']));
 app.use('/api/pengurus', crud('pengurus', ['nama', 'jabatan', 'divisi', 'foto', 'urutan']));
 
 // ================= TANYA JAWAB (Q&A) =================
-app.get('/api/pertanyaan', (req, res) => {
-  const db = readDB();
+app.get('/api/pertanyaan', ah(async (req, res) => {
+  const db = await readDB();
   const isAdmin = req.session && req.session.role === 'admin';
 
   if (req.query.all === '1') {
@@ -323,24 +302,16 @@ app.get('/api/pertanyaan', (req, res) => {
   }
   if (req.query.mine === '1') {
     if (!req.session || !req.session.userId) return res.status(401).json({ error: 'Silakan login terlebih dahulu' });
-    return res.json(
-      db.pertanyaan
-        .filter((p) => p.userId === req.session.userId)
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    );
+    return res.json(db.pertanyaan.filter((p) => p.userId === req.session.userId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
   }
-  res.json(
-    db.pertanyaan
-      .filter((p) => p.status === 'dijawab')
-      .sort((a, b) => new Date(b.answeredAt) - new Date(a.answeredAt))
-  );
-});
+  res.json(db.pertanyaan.filter((p) => p.status === 'dijawab').sort((a, b) => new Date(b.answeredAt) - new Date(a.answeredAt)));
+}));
 
-app.post('/api/pertanyaan', (req, res) => {
+app.post('/api/pertanyaan', ah(async (req, res) => {
   const { pertanyaan, namaPenanya, emailPenanya } = req.body || {};
   if (!pertanyaan || !pertanyaan.trim()) return res.status(400).json({ error: 'Pertanyaan tidak boleh kosong' });
 
-  const db = readDB();
+  const db = await readDB();
   let userId = null;
   let nama = namaPenanya;
   let email = emailPenanya;
@@ -349,28 +320,20 @@ app.post('/api/pertanyaan', (req, res) => {
     const user = findUserById(db, req.session.userId);
     if (user) { userId = user.id; nama = user.name; email = user.email; }
   }
-  if (!nama || !email) {
-    return res.status(400).json({ error: 'Nama dan email wajib diisi (atau login terlebih dahulu)' });
-  }
+  if (!nama || !email) return res.status(400).json({ error: 'Nama dan email wajib diisi (atau login terlebih dahulu)' });
 
   const item = {
-    id: nextId(db, 'pertanyaan'),
-    userId,
-    namaPenanya: nama,
-    emailPenanya: email,
-    pertanyaan: pertanyaan.trim(),
-    jawaban: null,
-    status: 'menunggu',
-    createdAt: new Date().toISOString(),
-    answeredAt: null
+    id: nextId(db, 'pertanyaan'), userId, namaPenanya: nama, emailPenanya: email,
+    pertanyaan: pertanyaan.trim(), jawaban: null, status: 'menunggu',
+    createdAt: new Date().toISOString(), answeredAt: null
   };
   db.pertanyaan.push(item);
-  writeDB(db);
+  await writeDB(db);
   res.status(201).json(item);
-});
+}));
 
-app.put('/api/pertanyaan/:id', requireAuth, (req, res) => {
-  const db = readDB();
+app.put('/api/pertanyaan/:id', requireAuth, ah(async (req, res) => {
+  const db = await readDB();
   const item = db.pertanyaan.find((p) => p.id === Number(req.params.id));
   if (!item) return res.status(404).json({ error: 'Pertanyaan tidak ditemukan' });
   const { jawaban } = req.body || {};
@@ -378,28 +341,40 @@ app.put('/api/pertanyaan/:id', requireAuth, (req, res) => {
   item.jawaban = jawaban.trim();
   item.status = 'dijawab';
   item.answeredAt = new Date().toISOString();
-  writeDB(db);
+  await writeDB(db);
   res.json(item);
-});
+}));
 
-app.delete('/api/pertanyaan/:id', requireAuth, (req, res) => {
-  const db = readDB();
+app.delete('/api/pertanyaan/:id', requireAuth, ah(async (req, res) => {
+  const db = await readDB();
   const idx = db.pertanyaan.findIndex((p) => p.id === Number(req.params.id));
   if (idx === -1) return res.status(404).json({ error: 'Pertanyaan tidak ditemukan' });
   const removed = db.pertanyaan.splice(idx, 1);
-  writeDB(db);
+  await writeDB(db);
   res.json({ ok: true, removed: removed[0] });
-});
+}));
 
 // ================= STATIC FILES =================
-app.use('/uploads', express.static(uploadDir));
+if (!USE_BLOB) app.use('/uploads', express.static(uploadDir));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`\n✅ HIMATEKKOM website jalan di ${BASE_URL}`);
-  console.log(`   Panel admin: ${BASE_URL}/admin/\n`);
+// error handler terakhir, biar error async gak bikin function crash tanpa respons
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Terjadi kesalahan di server' });
 });
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n✅ HIMATEKKOM website jalan di ${BASE_URL}`);
+    console.log(`   Panel admin: ${BASE_URL}/admin/`);
+    console.log(`   Mode DB: ${USE_POSTGRES ? 'Postgres (cloud)' : 'File lokal (data/db.json)'}`);
+    console.log(`   Mode Upload: ${USE_BLOB ? 'Vercel Blob (cloud)' : 'Folder lokal (uploads/)'}\n`);
+  });
+}
+
+module.exports = app;
